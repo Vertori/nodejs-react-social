@@ -59,7 +59,7 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const currentUser = asyncHandler(async (req, res) => {
-  res.json({ message: "Current user info" });
+  res.json(req.user);
 });
 
 module.exports = { registerUser, loginUser, currentUser };
