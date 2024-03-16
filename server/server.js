@@ -4,9 +4,11 @@ const contactRoutes = require("./routes/contactRoutes");
 const userRoutes = require("./routes/userRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const connectWithDb = require("./config/dbConnection");
+var cors = require("cors");
 
 connectWithDb();
 const app = express();
+app.use(cors());
 
 app.use(express.json());
 app.use("/api/contacts", contactRoutes);
