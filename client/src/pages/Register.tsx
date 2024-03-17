@@ -8,7 +8,7 @@ const Register = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const registerUser = async (e) => {
+  const registerUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     try {
       await axios.post("http://localhost:5000/api/users/register", {
@@ -23,8 +23,8 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-full max-w-xl">
+    <div className="flex items-center justify-center pt-24">
+      <div className="w-full max-w-xl px-4">
         <form className="flex flex-col gap-2">
           <label className="flex items-center gap-2 input input-bordered">
             <svg
