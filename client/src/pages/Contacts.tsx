@@ -4,6 +4,7 @@ import { UserContext } from "../context/userContext";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { UserContact } from "../types";
+import { Link } from "react-router-dom";
 
 const Contacts = () => {
   const [cookies] = useCookies(["access_token"]);
@@ -32,8 +33,11 @@ const Contacts = () => {
   }, []);
 
   return (
-    <div className="px-12 py-4">
-      <div className="overflow-x-auto">
+    <div className="flex flex-col items-center justify-center gap-8 px-12 py-4">
+      <Link to="/addcontact" className="btn btn-wide">
+        Add new contact
+      </Link>
+      <div className="w-full overflow-x-auto">
         <table className="table">
           {/* head */}
           <thead>
