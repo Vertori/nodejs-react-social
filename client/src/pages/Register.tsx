@@ -23,7 +23,7 @@ const Register = () => {
   };
 
   return (
-    <div className="flex items-center justify-center pt-24">
+    <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         <form className="flex flex-col gap-2">
           <label className="flex items-center gap-2 input input-bordered">
