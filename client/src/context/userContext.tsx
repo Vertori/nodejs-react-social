@@ -1,4 +1,6 @@
+import axios from "axios";
 import { createContext, useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 interface User {
   auth: boolean;
@@ -17,6 +19,32 @@ const UserProvider = ({ children }: { children: React.ReactNode }) => {
     auth: false,
     name: "",
   });
+
+  const [cookies] = useCookies(["access_token"]);
+
+  useEffect(() => {
+    const refreshCurrentUser = async () => {
+      if (!user.auth && user.name === "") {
+        try {
+          const response = await axios.get(
+            "http://localhost:5000/api/users/current",
+            {
+              headers: {
+                Authorization: `Bearer ${cookies.access_token}`,
+              },
+            }
+          );
+          setUser({
+            auth: true,
+            name: response.data.username,
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    };
+    refreshCurrentUser();
+  }, []);
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
