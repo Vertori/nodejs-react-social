@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="px-8 py-4 shadow-md navbar bg-base-100">
+    <div className="fixed top-0 px-8 py-4 shadow-md navbar bg-base-100">
       <div className="flex-1">
         <Link to="/" className="text-xl btn btn-ghost" onClick={fetchTest}>
           Logo
@@ -58,7 +58,9 @@ const Navbar = () => {
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <Link to="/contacts" className="justify-between">Contacts</Link>
+                  <Link to="/contacts" className="justify-between">
+                    Contacts
+                  </Link>
                 </li>
                 <li>
                   <a>Settings</a>
