@@ -30,9 +30,6 @@ const Login = () => {
       );
       setCookies("access_token", response.data.accessToken);
       window.localStorage.setItem("userID", response.data.userID);
-      axios.defaults.headers.common[
-        "Authorization"
-      ] = `Bearer ${response.data.accessToken}`;
       setUser({ auth: true, name: response.data.username });
       navigate("/");
     } catch (err) {}

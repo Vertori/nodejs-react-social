@@ -37,16 +37,7 @@ const Navbar = () => {
         </Link>
       </div>
       <div className="flex-none">
-        {!cookies.access_token ? (
-          <ul className="px-1 menu menu-horizontal">
-            <li>
-              <Link to="/login">Login</Link>
-            </li>
-            <li>
-              <Link to="/register">Register</Link>
-            </li>
-          </ul>
-        ) : (
+        {cookies.access_token && user.auth ? (
           <div className="flex items-center gap-2">
             <p>{user.name}</p>
             <div className="dropdown dropdown-end">
@@ -67,7 +58,7 @@ const Navbar = () => {
                 className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
               >
                 <li>
-                  <a className="justify-between">Profile</a>
+                  <Link to="/contacts" className="justify-between">Contacts</Link>
                 </li>
                 <li>
                   <a>Settings</a>
@@ -78,6 +69,15 @@ const Navbar = () => {
               </ul>
             </div>
           </div>
+        ) : (
+          <ul className="px-1 menu menu-horizontal">
+            <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
+              <Link to="/register">Register</Link>
+            </li>
+          </ul>
         )}
       </div>
     </div>
