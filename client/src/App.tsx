@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Home from "./pages/Home";
 import Contacts from "./pages/Contacts";
 import AddContact from "./pages/AddContact";
+import UpdateContact from "./pages/UpdateContact";
 
 function App() {
   return (
@@ -17,7 +18,8 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/contacts" element={<Contacts />} />
-          <Route path="/addcontact" element={<AddContact />} />
+          <Route path="/contacts/add" element={<AddContact />} />
+          <Route path="/contacts/update/:id" element={<UpdateContact />} />
         </Routes>
       </Router>
     </>

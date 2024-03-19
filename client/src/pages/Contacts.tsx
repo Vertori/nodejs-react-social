@@ -74,7 +74,7 @@ const Contacts = () => {
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 px-12 py-4 mt-32">
-      <Link to="/addcontact" className="btn btn-wide">
+      <Link to="/contacts/add" className="btn btn-wide">
         Add new contact
       </Link>
       <div className="w-full overflow-x-auto">
@@ -96,12 +96,17 @@ const Contacts = () => {
                 <td>{contact.name}</td>
                 <td>{contact.email}</td>
                 <td>{contact.phone}</td>
-                <button
-                  onClick={() => deleteUsersContact.mutate(contact._id)}
-                  className="btn btn-error"
-                >
-                  Delete
-                </button>
+                <td className="flex gap-4">
+                  <Link to={`/contacts/update/${contact._id}`}>
+                    <button className="btn btn-info">Update</button>
+                  </Link>
+                  <button
+                    onClick={() => deleteUsersContact.mutate(contact._id)}
+                    className="btn btn-error"
+                  >
+                    Delete
+                  </button>
+                </td>
               </tr>
             ))}
           </tbody>
