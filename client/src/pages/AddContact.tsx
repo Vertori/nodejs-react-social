@@ -1,7 +1,9 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
+import { UserContact } from "../types";
 
 const AddContact = () => {
   const [name, setName] = useState("");
@@ -10,11 +12,11 @@ const AddContact = () => {
   const [cookies] = useCookies(["access_token"]);
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
-  const addNewContact = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
-    try {
-      await axios.post(
+  const addNewContact = useMutation({
+    mutationFn: async () => {
+      const { data } = await axios.post(
         "http://localhost:5000/api/contacts",
         { name, email, phone },
         {
@@ -23,11 +25,21 @@ const AddContact = () => {
           },
         }
       );
+      return data as UserContact;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userContacts"] });
       navigate("/contacts");
-    } catch (err) {
-      console.log(err);
-    }
+    },
+  });
+
+  const handleAddContactMutation = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    addNewContact.mutate();
   };
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
@@ -53,7 +65,10 @@ const AddContact = () => {
             onChange={(e) => setPhone(e.target.value)}
             value={phone}
           />
-          <button className="btn btn-primary" onClick={addNewContact}>
+          <button
+            className="btn btn-primary"
+            onClick={handleAddContactMutation}
+          >
             Add new contact
           </button>
         </form>
