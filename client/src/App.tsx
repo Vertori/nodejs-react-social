@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Contacts from "./pages/Contacts";
 import AddContact from "./pages/AddContact";
 import UpdateContact from "./pages/UpdateContact";
+import Account from "./pages/Account";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/account" element={<Account />} />
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/contacts/add" element={<AddContact />} />
           <Route path="/contacts/update/:id" element={<UpdateContact />} />
