@@ -1,5 +1,6 @@
 export interface UserContact {
-    name: string,
-    email: string,
-    phone: string,
-  }
+  _id: string;
+  name: string;
+  email: string;
+  phone: string;
+}

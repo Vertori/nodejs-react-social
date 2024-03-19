@@ -1,25 +1,17 @@
-import { useEffect, useState, useContext } from "react";
-import { UserContext } from "../context/userContext";
 import axios from "axios";
 import { useCookies } from "react-cookie";
 import { UserContact } from "../types";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 const Contacts = () => {
   const [cookies] = useCookies(["access_token"]);
-  //   const userContext = useContext(UserContext);
-
-  //   if (!userContext) {
-  //     throw new Error("UserContext is not available");
-  //   }
-
-  //   const { user } = userContext;
+  const queryClient = useQueryClient();
 
   const {
     data: userContactsData,
-    isLoading,
-    isError,
+    isLoading: UserContactsLoading,
+    isError: UserContactsError,
   } = useQuery({
     queryKey: ["userContacts"],
     queryFn: async () => {
@@ -32,7 +24,24 @@ const Contacts = () => {
     },
   });
 
-  if (isLoading) {
+  const deleteUsersContact = useMutation({
+    mutationFn: async (userId: string) => {
+      const { data } = await axios.delete(
+        `http://localhost:5000/api/contacts/${userId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${cookies.access_token}`,
+          },
+        }
+      );
+      return data as UserContact;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userContacts"] });
+    },
+  });
+
+  if (UserContactsLoading) {
     return (
       <div className="flex items-center justify-center w-screen h-screen">
         <span className="loading loading-spinner loading-lg"></span>
@@ -40,7 +49,7 @@ const Contacts = () => {
     );
   }
 
-  if (isError) {
+  if (UserContactsError) {
     return (
       <div className="flex items-center justify-center w-screen h-screen px-2">
         <div role="alert" className="max-w-lg alert alert-error">
@@ -76,7 +85,7 @@ const Contacts = () => {
               <th></th>
               <th>Name</th>
               <th>Email</th>
-              <th>Phone Color</th>
+              <th>Phone</th>
             </tr>
           </thead>
           <tbody>
@@ -87,6 +96,12 @@ const Contacts = () => {
                 <td>{contact.name}</td>
                 <td>{contact.email}</td>
                 <td>{contact.phone}</td>
+                <button
+                  onClick={() => deleteUsersContact.mutate(contact._id)}
+                  className="btn btn-error"
+                >
+                  Delete
+                </button>
               </tr>
             ))}
           </tbody>
