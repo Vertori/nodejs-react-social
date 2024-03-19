@@ -3,11 +3,23 @@ import { useContext, useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../context/userContext";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TLoginSchema, loginSchema } from "../types";
 
 const Login = () => {
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
+  const [_, setCookies] = useCookies(["access_token"]);
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<TLoginSchema>({
+    resolver: zodResolver(loginSchema),
+  });
+
   const userContext = useContext(UserContext);
 
   if (!userContext) {
@@ -16,29 +28,50 @@ const Login = () => {
 
   const { setUser } = userContext;
 
-  const [_, setCookies] = useCookies(["access_token"]);
-
-  const loginUser = async (e: React.MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault();
+  const loginUser = async (data: TLoginSchema) => {
     try {
       const response = await axios.post(
         "http://localhost:5000/api/users/login",
-        {
-          email,
-          password,
-        }
+        data
       );
       setCookies("access_token", response.data.accessToken);
       window.localStorage.setItem("userID", response.data.userID);
       setUser({ auth: true, name: response.data.username });
       navigate("/");
-    } catch (err) {}
+    } catch (err: any) {
+      if (err.response && err.response.data.message) {
+        setServerErrorMessage(err.response.data.message);
+      } else {
+        setServerErrorMessage("Something went wrong!");
+      }
+    }
   };
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
-        <form className="flex flex-col gap-2">
+        {serverErrorMessage && (
+          <div role="alert" className="alert alert-error my-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="stroke-current shrink-0 h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{serverErrorMessage}</span>
+          </div>
+        )}
+        <form
+          className="flex flex-col gap-2"
+          onSubmit={handleSubmit(loginUser)}
+        >
           <label className="flex items-center gap-2 input input-bordered">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -53,11 +86,12 @@ const Login = () => {
               type="text"
               className="grow"
               placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...register("email")}
             />
           </label>
-
+          {errors.email && (
+            <p className="text-red-500">{`${errors.email.message}`}</p>
+          )}
           <label className="flex items-center gap-2 input input-bordered">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -75,13 +109,13 @@ const Login = () => {
               type="password"
               className="grow"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              {...register("password")}
             />
           </label>
-          <button className="btn btn-primary" onClick={loginUser}>
-            Login user
-          </button>
+          {errors.password && (
+            <p className="text-red-500">{`${errors.password.message}`}</p>
+          )}
+          <button className="btn btn-primary">Login user</button>
         </form>
       </div>
     </div>
