@@ -7,6 +7,15 @@ export interface UserContact {
   phone: string;
 }
 
+export interface UserRecipe {
+  _id: string;
+  name: string;
+  ingredients: string[];
+  instructions: string;
+  imageUrl: string;
+  cookingTime: number;
+}
+
 export const registerSchema = z
   .object({
     email: z.string().email(),

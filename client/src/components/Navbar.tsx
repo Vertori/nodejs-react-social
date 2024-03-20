@@ -30,7 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <div className="fixed top-0 px-8 py-4 shadow-md navbar bg-base-100">
+    <div className="fixed top-0 px-8 py-4 shadow-md navbar bg-base-100 z-50">
       <div className="flex-1">
         <Link to="/" className="text-xl btn btn-ghost" onClick={fetchTest}>
           Logo
