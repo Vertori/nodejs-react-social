@@ -16,6 +16,14 @@ export interface UserRecipe {
   cookingTime: number;
 }
 
+export interface RecipeDBType {
+  name: string;
+  ingredients: string[];
+  instructions: string;
+  imageUrl: string;
+  cookingTime: number;
+}
+
 export const registerSchema = z
   .object({
     email: z.string().email(),

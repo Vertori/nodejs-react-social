@@ -51,10 +51,10 @@ const Login = () => {
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         {serverErrorMessage && (
-          <div role="alert" className="alert alert-error my-4">
+          <div role="alert" className="my-4 alert alert-error">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="stroke-current shrink-0 h-6 w-6"
+              className="w-6 h-6 stroke-current shrink-0"
               fill="none"
               viewBox="0 0 24 24"
             >
@@ -115,7 +115,7 @@ const Login = () => {
           {errors.password && (
             <p className="text-red-500">{`${errors.password.message}`}</p>
           )}
-          <button className="btn btn-primary">Login user</button>
+          <button disabled={isSubmitting} className="btn btn-primary">Login user</button>
         </form>
       </div>
     </div>

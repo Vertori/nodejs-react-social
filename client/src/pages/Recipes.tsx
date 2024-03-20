@@ -79,9 +79,13 @@ const Recipes = () => {
       <Link to="/recipes/add" className="btn btn-wide">
         Add new recipe
       </Link>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {userRecipesData?.map((recipe) => (
-          <Recipe recipe={recipe} deleteUsersRecipe={deleteUsersRecipe} />
+          <Recipe
+            recipe={recipe}
+            deleteUsersRecipe={deleteUsersRecipe}
+            key={recipe._id}
+          />
         ))}
       </div>
     </div>
