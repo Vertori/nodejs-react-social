@@ -10,10 +10,10 @@ interface RecipeProps {
 const Recipe = ({ recipe, deleteUsersRecipe }: RecipeProps) => {
   return (
     <div
-      className="card card-compact max-w-96 w-full bg-base-100 shadow-xl relative"
+      className="relative w-full shadow-xl card card-compact max-w-96 bg-base-100"
       key={recipe._id}
     >
-      <ul className="menu menu-horizontal bg-base-200 rounded-box absolute top-1 right-1">
+      <ul className="absolute menu menu-horizontal bg-base-200 rounded-box top-1 right-1">
         <li>
           <Link
             to={`/recipes/update/${recipe._id}`}
@@ -60,13 +60,17 @@ const Recipe = ({ recipe, deleteUsersRecipe }: RecipeProps) => {
         </li>
       </ul>
       <figure>
-        <img src={recipe.imageUrl} alt={`${recipe.name} photo`} />
+        <img
+          src={recipe.imageUrl}
+          alt={`${recipe.name} photo`}
+          className="h-[300px] w-full object-cover"
+        />
       </figure>
       <div className="card-body">
         <h2 className="card-title">{recipe.name}</h2>
         <p>{recipe.instructions}</p>
-        <div className="card-actions justify-end">
-          <button className="btn btn-primary text-white">Let's cook!</button>
+        <div className="justify-end card-actions">
+          <button className="text-white btn btn-primary">Let's cook!</button>
         </div>
       </div>
     </div>

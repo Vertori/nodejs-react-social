@@ -6,7 +6,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Recipe from "../components/Recipe";
 
 const Recipes = () => {
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies, setCookies] = useCookies(["access_token"]);
   const queryClient = useQueryClient();
 
   const {

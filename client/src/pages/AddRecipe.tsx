@@ -24,7 +24,7 @@ type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;
 
 const AddRecipe = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
-  const [cookies] = useCookies(["access_token"]);
+  const [cookies, setCookies] = useCookies(["access_token"]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
