@@ -1,26 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { RecipeDBType, UserRecipe } from "../types";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  RecipeDBType,
+  TAddRecipeFormSchema,
+  UserRecipe,
+  addRecipeFormSchema,
+} from "../types";
 import { useCookies } from "react-cookie";
 import { FieldValues, useFieldArray, useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-const addRecipeFormSchema = z.object({
-  name: z.string(),
-  ingredients: z.array(
-    z.object({
-      ingredient: z.string(),
-    })
-  ),
-  instructions: z.string(),
-  imageUrl: z.string().url(),
-  cookingTime: z.coerce.number().positive(),
-});
-
-type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;
 
 const AddRecipe = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
@@ -38,6 +28,7 @@ const AddRecipe = () => {
     defaultValues: {
       ingredients: [{ ingredient: "" }, { ingredient: "" }],
     },
+    mode: "onChange",
   });
 
   const addNewRecipe = useMutation({
@@ -108,35 +99,44 @@ const AddRecipe = () => {
           {errors.name && (
             <p className="text-red-500">{`${errors.name.message}`}</p>
           )}
-          {fields.map((field, index) => (
-            <div key={field.id} className="flex gap-x-1">
-              <input
-                {...register(`ingredients.${index}.ingredient`)}
-                type="text"
-                className="w-full input input-bordered"
-                placeholder={`Ingredient ${index + 1}`}
-              />
-              <button
-                className="btn btn-circle btn-outline"
-                onClick={() => remove(index)}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="w-6 h-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
+          {fields.map((field, index) => {
+            const errorForField = errors?.ingredients?.[index]?.ingredient;
+            return (
+              <div key={field.id} className="flex flex-col">
+                <div className="flex gap-x-1">
+                  <input
+                    {...register(`ingredients.${index}.ingredient`)}
+                    type="text"
+                    className="w-full input input-bordered"
+                    placeholder={`Ingredient ${index + 1}`}
                   />
-                </svg>
-              </button>
-            </div>
-          ))}
+                  <button
+                    className="btn btn-circle btn-outline"
+                    onClick={() => remove(index)}
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-6 h-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </button>
+                </div>
+                {errorForField && (
+                  <p className="text-red-500">{`${errorForField?.message}`}</p>
+                )}
+              </div>
+            );
+          })}
+
           <button
             onClick={() => {
               append({

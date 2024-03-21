@@ -24,6 +24,7 @@ export interface RecipeDBType {
   cookingTime: number;
 }
 
+// register form
 export const registerSchema = z
   .object({
     email: z.string().email(),
@@ -47,3 +48,24 @@ export const loginSchema = z.object({
 });
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
+
+// recipe form
+export const addRecipeFormSchema = z.object({
+  name: z.string().trim().min(1, { message: "Recipe name is required" }),
+  ingredients: z.array(
+    z.object({
+      ingredient: z
+        .string()
+        .trim()
+        .min(1, { message: "Ingredient can't be empty" }),
+    })
+  ),
+  instructions: z
+    .string()
+    .trim()
+    .min(1, { message: "Instructions can't be empty" }),
+  imageUrl: z.string().url(),
+  cookingTime: z.coerce.number().positive(),
+});
+
+export type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;

@@ -97,7 +97,7 @@ const UpdateContact = () => {
             value={phone}
           />
           <button
-            className="btn btn-primary text-white"
+            className="text-white btn btn-primary"
             onClick={handleUpdateContactMutation}
           >
             Update contact
