@@ -98,8 +98,8 @@ const UpdateRecipes = () => {
   });
 
   return (
-    <div className="flex items-center justify-center w-screen min-h-screen mt-20 xl:mt-0">
-      <div className="w-full max-w-xl px-4">
+    <div className="flex items-center justify-center w-screen min-h-screen">
+      <div className="w-full max-w-xl p-4 overflow-y-auto max-h-[65vh]">
         {serverErrorMessage && (
           <div role="alert" className="my-4 alert alert-error">
             <svg
