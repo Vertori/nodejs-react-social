@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import { UserRecipe } from "../types";
 import { UseMutationResult } from "@tanstack/react-query";
+import { IoBookOutline } from "react-icons/io5";
+import { BsClock } from "react-icons/bs";
 
 interface RecipeProps {
   recipe: UserRecipe;
@@ -68,9 +70,82 @@ const Recipe = ({ recipe, deleteUsersRecipe }: RecipeProps) => {
       </figure>
       <div className="card-body">
         <h2 className="card-title">{recipe.name}</h2>
-        <p>{recipe.instructions}</p>
+        <p className="break-words">
+          {recipe.instructions.slice(0, 50) + "..."}
+        </p>
         <div className="justify-end card-actions">
-          <button className="text-white btn btn-primary">Let's cook!</button>
+          {/* The button to open modal */}
+          <label
+            htmlFor={`my_modal_${recipe._id}`}
+            className="btn btn-primary"
+            onClick={() => console.log(recipe.name)}
+          >
+            Let's cook!
+          </label>
+
+          {/* Put this part before </body> tag */}
+          <input
+            type="checkbox"
+            id={`my_modal_${recipe._id}`}
+            className="modal-toggle"
+          />
+          <div className="modal " role="dialog">
+            <div className="w-11/12 max-w-5xl modal-box">
+              <div>
+                <img
+                  src={recipe.imageUrl}
+                  className="h-[300px] w-full object-cover"
+                />
+              </div>
+              <h1 className="mt-2 text-2xl font-bold">{recipe.name}</h1>
+              <div className="divider" />
+              {/* main info  */}
+              <div className="flex justify-start gap-4">
+                {/* cooking time */}
+                <div className="flex flex-col items-start justify-center text-base gap-x-2">
+                  <div className="flex items-center justify-center gap-x-2">
+                    <BsClock />
+                    <span className="font-bold text-blue-700">
+                      {recipe.cookingTime}
+                    </span>
+                  </div>
+                  <span className="text-lg">Minutes</span>
+                </div>
+                {/* ingredients amount */}
+                <div className="flex flex-col items-start justify-center text-base gap-x-2">
+                  <div className="flex items-center justify-center gap-x-2">
+                    <IoBookOutline />
+                    <span className="font-bold text-blue-700">
+                      {recipe.ingredients.length}
+                    </span>
+                  </div>
+                  <span className="text-lg">Ingredients</span>
+                </div>
+              </div>
+              <div className="divider" />
+              {/*  ingredients */}
+              <div>
+                <h3 className="text-lg text-blue-700">Ingredients</h3>
+                <ul className="list-disc">
+                  {recipe.ingredients.map((ingredient) => (
+                    <li>{ingredient}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="divider" />
+              {/* instructions  */}
+              <h4 className="text-lg text-blue-700">Instructions</h4>
+              <div className="">
+                <p className="break-words">{recipe.instructions}</p>
+              </div>
+            </div>
+            <label
+              className="modal-backdrop"
+              htmlFor={`my_modal_${recipe._id}`}
+            >
+              Close
+            </label>
+          </div>
         </div>
       </div>
     </div>

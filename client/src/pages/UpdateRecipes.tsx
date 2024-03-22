@@ -98,7 +98,7 @@ const UpdateRecipes = () => {
   });
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen">
+    <div className="flex items-center justify-center w-screen min-h-screen mt-20 xl:mt-0">
       <div className="w-full max-w-xl px-4">
         {serverErrorMessage && (
           <div role="alert" className="my-4 alert alert-error">
