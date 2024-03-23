@@ -1,6 +1,5 @@
 import axios from "axios";
 import { useState } from "react";
-import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,6 +11,8 @@ import {
   signInFailure,
 } from "../features/user/userSlice";
 import { AppDispatch, RootState } from "../app/store";
+import { FcGoogle } from "react-icons/fc";
+import OAuth from "../components/OAuth";
 
 const Login = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
@@ -50,7 +51,7 @@ const Login = () => {
   };
 
   return (
-    <div className="flex items-center justify-center w-screen h-screen">
+    <div className="flex flex-col items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         {serverErrorMessage && (
           <div role="alert" className="my-4 alert alert-error">
@@ -121,6 +122,10 @@ const Login = () => {
             Login user
           </button>
         </form>
+        {/* divider  */}
+        <div className="w-full max-w-xl mx-auto divider">OR</div>
+        {/* login with google button  */}
+        <OAuth />
       </div>
     </div>
   );
