@@ -11,6 +11,9 @@ import Account from "./pages/Account";
 import Recipes from "./pages/Recipes";
 import UpdateRecipes from "./pages/UpdateRecipes";
 import AddRecipe from "./pages/AddRecipe";
+import axios from "axios";
+
+axios.defaults.withCredentials = true;
 
 function App() {
   return (

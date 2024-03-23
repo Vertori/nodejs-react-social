@@ -1,8 +1,7 @@
 import axios from "axios";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useNavigate } from "react-router-dom";
-import { UserContext } from "../context/userContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TLoginSchema, loginSchema } from "../types";
@@ -20,13 +19,6 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const userContext = useContext(UserContext);
-
-  if (!userContext) {
-    throw new Error("UserContext is not available");
-  }
-
-  const { setUser } = userContext;
 
   const loginUser = async (data: TLoginSchema) => {
     try {
@@ -34,9 +26,7 @@ const Login = () => {
         "http://localhost:5000/api/users/login",
         data
       );
-      setCookies("access_token", response.data.accessToken);
-      window.localStorage.setItem("userID", response.data.userID);
-      setUser({ auth: true, name: response.data.username });
+      console.log(response)
       navigate("/");
     } catch (err: any) {
       if (err.response && err.response.data.message) {
