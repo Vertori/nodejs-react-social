@@ -52,7 +52,10 @@ const loginUser = asyncHandler(async (req, res) => {
       { expiresIn: "55m" }
     );
     const { password, ...responseUser } = user._doc;
-    res.status(200).cookie("access_token", accessToken, {httpOnly: true}).json(responseUser);
+    res
+      .status(200)
+      .cookie("access_token", accessToken, { httpOnly: true })
+      .json(responseUser);
   } else {
     res.status(401);
     throw new Error("Email or password is not valid");
@@ -63,4 +66,20 @@ const currentUser = asyncHandler(async (req, res) => {
   res.json(req.user);
 });
 
-module.exports = { registerUser, loginUser, currentUser };
+const logoutUser = asyncHandler(async (req, res) => {
+  try {
+    res.clearCookie("access_token");
+    res.status(200).json("User has been logged out!");
+  } catch (err) {
+    res.status(500);
+    throw new Error(`Couldn't logout user, error: ${err}`);
+  }
+});
+
+module.exports = {
+  registerUser,
+  loginUser,
+  logoutUser,
+  logoutUser,
+  currentUser,
+};

@@ -1,20 +1,34 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import {
+  logoutUserStart,
+  logoutUserSuccess,
+  logoutUserFailure,
+} from "../features/user/userSlice";
 
 const Navbar = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // const handleLogout = () => {
-  //   setCookies("access_token", "");
-  //   window.localStorage.removeItem("userID");
-  //   delete axios.defaults.headers.common["Authorization"];
-  //   navigate("/login");
-  // };
+  const handleLogout = async () => {
+    try {
+      dispatch(logoutUserStart());
+      const { data } = await axios.get(
+        "http://localhost:5000/api/users/logout"
+      );
+      if (data.success === false) {
+        dispatch(logoutUserFailure(data.message));
+        return;
+      }
+      dispatch(logoutUserSuccess());
+      navigate("/login");
+    } catch (err) {
+      dispatch(logoutUserFailure(err));
+    }
+  };
 
   return (
     <div className="fixed top-0 z-50 px-8 py-4 shadow-md navbar bg-base-100">
@@ -56,7 +70,7 @@ const Navbar = () => {
                 <li>
                   <Link to="/account">Account</Link>
                 </li>
-                <li onClick={() => {}}>
+                <li onClick={handleLogout}>
                   <a>Logout</a>
                 </li>
               </ul>
