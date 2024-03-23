@@ -5,11 +5,19 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TLoginSchema, loginSchema } from "../types";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from "../features/user/userSlice";
+import { AppDispatch, RootState } from "../app/store";
 
 const Login = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
-  const [_, setCookies] = useCookies(["access_token"]);
+  // const { loading, error } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const {
     register,
@@ -19,14 +27,17 @@ const Login = () => {
     resolver: zodResolver(loginSchema),
   });
 
-
   const loginUser = async (data: TLoginSchema) => {
     try {
+      dispatch(signInStart());
       const response = await axios.post(
         "http://localhost:5000/api/users/login",
         data
       );
-      console.log(response)
+      if (response.data.success === false) {
+        dispatch(signInFailure(response.data.message));
+      }
+      dispatch(signInSuccess(response.data));
       navigate("/");
     } catch (err: any) {
       if (err.response && err.response.data.message) {
@@ -34,6 +45,7 @@ const Login = () => {
       } else {
         setServerErrorMessage("Something went wrong!");
       }
+      dispatch(signInFailure("Login error!"));
     }
   };
 
@@ -105,7 +117,9 @@ const Login = () => {
           {errors.password && (
             <p className="text-red-500">{`${errors.password.message}`}</p>
           )}
-          <button disabled={isSubmitting} className="btn btn-primary">Login user</button>
+          <button disabled={isSubmitting} className="btn btn-primary">
+            Login user
+          </button>
         </form>
       </div>
     </div>
