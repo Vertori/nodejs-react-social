@@ -4,6 +4,7 @@ export interface LoggedUser {
   _id: string;
   username: string;
   email: string;
+  avatar: string;
 }
 
 export interface UserContact {
