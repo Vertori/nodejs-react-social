@@ -1,17 +1,92 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
 
 const Account = () => {
+  const uploadfileRef = useRef<HTMLInputElement>(null);
   const { currentUser } = useSelector((state: RootState) => state.user);
+  const [file, setFile] = useState<File | undefined>(undefined);
+  const [filePercentage, setFilePercentage] = useState(0);
+  const [fileUploadError, setFileUploadError] = useState(false);
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
+    if (file) {
+      handleFileUpload(file);
+    }
+  }, [file]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+    }
+  };
+
+  const handleFileUpload = (file: File) => {
+    const storage = getStorage(app);
+    const fileName = new Date().getTime() + file.name; // generate unique file name
+    const storageRef = ref(storage, fileName);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setFilePercentage(Math.round(progress));
+      },
+      (error: any) => {
+        setFileUploadError(true);
+      },
+      () => {
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+          setFormData({ ...formData, avatar: downloadURL })
+        );
+      }
+    );
+  };
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         <h1 className="py-8 text-3xl font-semibold text-center">Account</h1>
         <form className="flex flex-col gap-3">
-          <img
-            src={currentUser?.avatar}
-            className="self-center object-cover w-24 h-24 rounded-full cursor-pointer"
+          <input
+            type="file"
+            ref={uploadfileRef}
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
           />
+          <img
+            src={formData.avatar || currentUser?.avatar}
+            className="self-center object-cover w-24 h-24 rounded-full cursor-pointer"
+            onClick={() =>
+              uploadfileRef.current && uploadfileRef.current.click()
+            }
+          />
+          <p className="self-center text-sm">
+            {fileUploadError ? (
+              <span className="text-red-700">
+                Error while uploading image (Image has to be less than 2 MBs)
+              </span>
+            ) : filePercentage > 0 && filePercentage < 100 ? (
+              <span className="text-slate-700">{`Uploading ${filePercentage}%`}</span>
+            ) : filePercentage === 100 ? (
+              <span className="text-green-700">
+                Successfully uploaded image!
+              </span>
+            ) : (
+              ""
+            )}
+          </p>
           <label className="flex items-center gap-2 input input-bordered">
             <svg
               xmlns="http://www.w3.org/2000/svg"
