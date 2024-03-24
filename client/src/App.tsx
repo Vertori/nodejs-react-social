@@ -12,6 +12,7 @@ import Recipes from "./pages/Recipes";
 import UpdateRecipes from "./pages/UpdateRecipes";
 import AddRecipe from "./pages/AddRecipe";
 import axios from "axios";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 axios.defaults.withCredentials = true;
 
@@ -24,7 +25,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/account" element={<Account />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/account" element={<Account />} />
+          </Route>
           <Route path="/contacts" element={<Contacts />} />
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/recipes/add" element={<AddRecipe />} />
