@@ -24,12 +24,7 @@ const UpdateRecipes = () => {
     queryKey: ["recipeToUpdate"],
     queryFn: async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/api/recipes/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${cookies.access_token}`,
-          },
-        }
+        `http://localhost:5000/api/recipes/${id}`
       );
       return data;
     },
