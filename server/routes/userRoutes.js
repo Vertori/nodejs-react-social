@@ -5,6 +5,7 @@ const {
   currentUser,
   logoutUser,
   loginWithGoogle,
+  updateUser,
 } = require("../controllers/userController");
 const validateToken = require("../middleware/validateTokenHandler");
 
@@ -17,6 +18,8 @@ router.post("/login", loginUser);
 router.get("/logout", logoutUser);
 
 router.post("/google", loginWithGoogle);
+
+router.post("/update/:id", validateToken, updateUser);
 
 router.get("/current", validateToken, currentUser);
 

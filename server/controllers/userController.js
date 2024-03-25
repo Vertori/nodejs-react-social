@@ -119,10 +119,41 @@ const loginWithGoogle = asyncHandler(async (req, res) => {
   }
 });
 
+const updateUser = asyncHandler(async (req, res, next) => {
+  if (req.user.id !== req.params.id) {
+    res.status(401);
+    throw new Error("You can only update your own account!");
+  }
+
+  try {
+    if (req.body.password) {
+      req.body.password = bcrypt.hashSync(req.body.password, 10);
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        $set: {
+          username: req.body.username,
+          email: req.body.email,
+          password: req.body.password,
+          avatar: req.body.avatar,
+        },
+      },
+      { new: true }
+    );
+    const { password, ...rest } = updatedUser._doc;
+    res.status(200).json(rest);
+  } catch (err) {
+    res.status(500);
+    throw new Error(`Error happened while trying to update your account!`);
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
   loginWithGoogle,
   logoutUser,
   currentUser,
+  updateUser,
 };
