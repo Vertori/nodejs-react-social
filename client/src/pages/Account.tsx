@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import React, { useEffect, useRef, useState } from "react";
 import {
@@ -8,6 +8,12 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import {
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+} from "../features/user/userSlice";
+import axios from "axios";
 
 const Account = () => {
   const uploadfileRef = useRef<HTMLInputElement>(null);
@@ -16,6 +22,7 @@ const Account = () => {
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (file) {
@@ -53,11 +60,35 @@ const Account = () => {
     );
   };
 
+  const handleInputChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      dispatch(updateUserStart());
+      const { data } = await axios.post(
+        `http://localhost:5000/api/users/update/${currentUser?._id}`,
+        formData,
+        {}
+      );
+      if (data.success === false) {
+        dispatch(updateUserFailure(data.message));
+        return;
+      }
+
+      dispatch(updateUserSuccess(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         <h1 className="py-8 text-3xl font-semibold text-center">Account</h1>
-        <form className="flex flex-col gap-3">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
           <input
             type="file"
             ref={uploadfileRef}
@@ -96,7 +127,14 @@ const Account = () => {
             >
               <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
             </svg>
-            <input type="text" className="grow" placeholder="Username" />
+            <input
+              type="text"
+              className="grow"
+              placeholder="Username"
+              id="username"
+              defaultValue={currentUser?.username}
+              onChange={handleInputChange}
+            />
           </label>
           <label className="flex items-center gap-2 input input-bordered">
             <svg
@@ -108,7 +146,14 @@ const Account = () => {
               <path d="M2.5 3A1.5 1.5 0 0 0 1 4.5v.793c.026.009.051.02.076.032L7.674 8.51c.206.1.446.1.652 0l6.598-3.185A.755.755 0 0 1 15 5.293V4.5A1.5 1.5 0 0 0 13.5 3h-11Z" />
               <path d="M15 6.954 8.978 9.86a2.25 2.25 0 0 1-1.956 0L1 6.954V11.5A1.5 1.5 0 0 0 2.5 13h11a1.5 1.5 0 0 0 1.5-1.5V6.954Z" />
             </svg>
-            <input type="text" className="grow" placeholder="Email" />
+            <input
+              type="email"
+              className="grow"
+              placeholder="Email"
+              id="email"
+              defaultValue={currentUser?.email}
+              onChange={handleInputChange}
+            />
           </label>
 
           <label className="flex items-center gap-2 input input-bordered">
@@ -124,7 +169,13 @@ const Account = () => {
                 clipRule="evenodd"
               />
             </svg>
-            <input type="password" className="grow" placeholder="Password" />
+            <input
+              type="password"
+              className="grow"
+              placeholder="Password"
+              id="password"
+              onChange={handleInputChange}
+            />
           </label>
           <button className="btn btn-primary">Update account</button>
         </form>
