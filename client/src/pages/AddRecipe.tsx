@@ -35,12 +35,7 @@ const AddRecipe = () => {
     mutationFn: async (recipeData: RecipeDBType) => {
       const { data } = await axios.post(
         "http://localhost:5000/api/recipes",
-        recipeData,
-        {
-          headers: {
-            Authorization: `Bearer ${cookies.access_token}`,
-          },
-        }
+        recipeData
       );
       return data as UserRecipe;
     },
