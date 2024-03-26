@@ -6,6 +6,7 @@ const {
   logoutUser,
   loginWithGoogle,
   updateUser,
+  deleteUser,
 } = require("../controllers/userController");
 const validateToken = require("../middleware/validateTokenHandler");
 
@@ -20,6 +21,8 @@ router.get("/logout", logoutUser);
 router.post("/google", loginWithGoogle);
 
 router.post("/update/:id", validateToken, updateUser);
+
+router.delete("/delete/:id", validateToken, deleteUser);
 
 router.get("/current", validateToken, currentUser);
 

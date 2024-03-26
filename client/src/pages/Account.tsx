@@ -12,6 +12,8 @@ import {
   updateUserStart,
   updateUserSuccess,
   updateUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
 } from "../features/user/userSlice";
 import axios from "axios";
 
@@ -79,6 +81,18 @@ const Account = () => {
       }
 
       dispatch(updateUserSuccess(data));
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      await axios.delete(
+        `http://localhost:5000/api/users/delete/${currentUser?._id}`
+      );
+      dispatch(deleteUserSuccess());
     } catch (err) {
       console.log(err);
     }
@@ -181,7 +195,9 @@ const Account = () => {
         </form>
         {/* account actions buttons */}
         <div className="flex justify-between mt-4">
-          <button className="btn btn-error">Delete Account</button>
+          <button className="btn btn-error" onClick={handleDeleteUser}>
+            Delete Account
+          </button>
           <button className="btn btn-warning">Logout</button>
         </div>
       </div>

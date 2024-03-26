@@ -149,6 +149,22 @@ const updateUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  if (req.user.id !== req.params.id) {
+    res.status(401);
+    throw new Error("You can only delete your own account!");
+  }
+
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    res.clearCookie("access_token")
+    res.status(200).json({ message: "User has been deleted!" });
+  } catch (err) {
+    res.status(500);
+    throw new Error(`Error happened while trying to delete your account!`);
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -156,4 +172,5 @@ module.exports = {
   logoutUser,
   currentUser,
   updateUser,
+  deleteUser,
 };
