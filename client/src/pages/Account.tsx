@@ -14,8 +14,12 @@ import {
   updateUserFailure,
   deleteUserStart,
   deleteUserSuccess,
+  logoutUserStart,
+  logoutUserFailure,
+  logoutUserSuccess,
 } from "../features/user/userSlice";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Account = () => {
   const uploadfileRef = useRef<HTMLInputElement>(null);
@@ -25,6 +29,7 @@ const Account = () => {
   const [fileUploadError, setFileUploadError] = useState(false);
   const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (file) {
@@ -72,8 +77,7 @@ const Account = () => {
       dispatch(updateUserStart());
       const { data } = await axios.post(
         `http://localhost:5000/api/users/update/${currentUser?._id}`,
-        formData,
-        {}
+        formData
       );
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
@@ -95,6 +99,23 @@ const Account = () => {
       dispatch(deleteUserSuccess());
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      dispatch(logoutUserStart());
+      const { data } = await axios.get(
+        "http://localhost:5000/api/users/logout"
+      );
+      if (data.success === false) {
+        dispatch(logoutUserFailure(data.message));
+        return;
+      }
+      dispatch(logoutUserSuccess());
+      navigate("/login");
+    } catch (err) {
+      dispatch(logoutUserFailure(err));
     }
   };
 
@@ -198,7 +219,9 @@ const Account = () => {
           <button className="btn btn-error" onClick={handleDeleteUser}>
             Delete Account
           </button>
-          <button className="btn btn-warning">Logout</button>
+          <button className="btn btn-warning" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
     </div>
