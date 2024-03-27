@@ -76,3 +76,20 @@ export const addRecipeFormSchema = z.object({
 });
 
 export type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;
+
+// update account form
+export const updateAccountSchema = z.object({
+  email: z.string().email(),
+  username: z
+    .string()
+    .min(6, "Username must be at least 6 characters")
+    .max(12, "Username can't be longer than 12 characters!"),
+  password: z
+    .string()
+    .min(8, "Password must be at least 8 characters")
+    .optional()
+    .or(z.literal("")),
+  avatar: z.string(),
+});
+
+export type TUpdateAccountSchema = z.infer<typeof updateAccountSchema>;

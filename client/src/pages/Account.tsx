@@ -9,6 +9,8 @@ import {
   updateUserSuccess,
 } from "../features/user/userSlice";
 import axios from "axios";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { TUpdateAccountSchema, updateAccountSchema } from "../types";
 
 const Account = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
@@ -21,12 +23,13 @@ const Account = () => {
     handleSubmit,
     setValue,
     formState: { errors, isSubmitting, dirtyFields },
-  } = useForm({
+  } = useForm<TUpdateAccountSchema>({
+    resolver: zodResolver(updateAccountSchema),
     values: {
-      username: currentUser?.username,
-      email: currentUser?.email,
+      username: currentUser?.username ?? "",
+      email: currentUser?.email ?? "",
       password: "",
-      avatar: currentUser?.avatar,
+      avatar: currentUser?.avatar ?? "",
     },
   });
 
@@ -53,7 +56,7 @@ const Account = () => {
     return dirtyValues;
   }
 
-  const handleUserUpdate = async (formData) => {
+  const handleUserUpdate = async (formData: TUpdateAccountSchema) => {
     const modifiedInputData = getDirtyValues(dirtyFields, formData);
     console.log(modifiedInputData);
 
@@ -121,6 +124,9 @@ const Account = () => {
               {...register("username")}
             />
           </label>
+          {errors.username && (
+            <p className="text-red-500">{`${errors.username.message}`}</p>
+          )}
           <label className="flex items-center gap-2 input input-bordered">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -139,6 +145,9 @@ const Account = () => {
               {...register("email")}
             />
           </label>
+          {errors.email && (
+            <p className="text-red-500">{`${errors.email.message}`}</p>
+          )}
 
           <label className="flex items-center gap-2 input input-bordered">
             <svg
@@ -161,7 +170,16 @@ const Account = () => {
               {...register("password")}
             />
           </label>
-          <button className="btn btn-primary">Update account</button>
+          {errors.password && (
+            <p className="text-red-500">{`${errors.password.message}`}</p>
+          )}
+          <button
+            disabled={isSubmitting}
+            type="submit"
+            className="btn btn-primary"
+          >
+            Update account
+          </button>
         </form>
         {/* account actions buttons */}
         <div className="flex justify-between mt-4">
