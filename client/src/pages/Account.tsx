@@ -1,83 +1,67 @@
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import React, { useEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
+import ProfileAvatar from "../components/ProfileAvatar";
+import { useState } from "react";
 import {
-  getDownloadURL,
-  getStorage,
-  ref,
-  uploadBytesResumable,
-} from "firebase/storage";
-import { app } from "../firebase";
-import {
+  updateUserFailure,
   updateUserStart,
   updateUserSuccess,
-  updateUserFailure,
-  deleteUserStart,
-  deleteUserSuccess,
-  logoutUserStart,
-  logoutUserFailure,
-  logoutUserSuccess,
 } from "../features/user/userSlice";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 
 const Account = () => {
-  const uploadfileRef = useRef<HTMLInputElement>(null);
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const [file, setFile] = useState<File | undefined>(undefined);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
-  const [formData, setFormData] = useState({});
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    if (file) {
-      handleFileUpload(file);
-    }
-  }, [file]);
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    formState: { errors, isSubmitting, dirtyFields },
+  } = useForm({
+    values: {
+      username: currentUser?.username,
+      email: currentUser?.email,
+      password: "",
+      avatar: currentUser?.avatar,
+    },
+  });
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0];
-    if (selectedFile) {
-      setFile(selectedFile);
-    }
-  };
+  // get only those input values that got changed
+  function getDirtyValues<
+    DirtyFields extends Record<string, unknown>,
+    Values extends Record<keyof DirtyFields, unknown>
+  >(dirtyFields: DirtyFields, values: Values): Partial<typeof values> {
+    const dirtyValues = Object.keys(dirtyFields).reduce((prev, key) => {
+      if (!dirtyFields[key]) return prev;
 
-  const handleFileUpload = (file: File) => {
-    const storage = getStorage(app);
-    const fileName = new Date().getTime() + file.name; // generate unique file name
-    const storageRef = ref(storage, fileName);
-    const uploadTask = uploadBytesResumable(storageRef, file);
-    uploadTask.on(
-      "state_changed",
-      (snapshot) => {
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        setFilePercentage(Math.round(progress));
-      },
-      (error: any) => {
-        setFileUploadError(true);
-      },
-      () => {
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
-          setFormData({ ...formData, avatar: downloadURL })
-        );
-      }
-    );
-  };
+      return {
+        ...prev,
+        [key]:
+          typeof dirtyFields[key] === "object"
+            ? getDirtyValues(
+                dirtyFields[key] as DirtyFields,
+                values[key] as Values
+              )
+            : values[key],
+      };
+    }, {});
 
-  const handleInputChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
+    return dirtyValues;
+  }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleUserUpdate = async (formData) => {
+    const modifiedInputData = getDirtyValues(dirtyFields, formData);
+    console.log(modifiedInputData);
+
     try {
       dispatch(updateUserStart());
       const { data } = await axios.post(
         `http://localhost:5000/api/users/update/${currentUser?._id}`,
-        formData
+        modifiedInputData
       );
       if (data.success === false) {
         dispatch(updateUserFailure(data.message));
@@ -90,53 +74,20 @@ const Account = () => {
     }
   };
 
-  const handleDeleteUser = async () => {
-    try {
-      dispatch(deleteUserStart());
-      await axios.delete(
-        `http://localhost:5000/api/users/delete/${currentUser?._id}`
-      );
-      dispatch(deleteUserSuccess());
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      dispatch(logoutUserStart());
-      const { data } = await axios.get(
-        "http://localhost:5000/api/users/logout"
-      );
-      if (data.success === false) {
-        dispatch(logoutUserFailure(data.message));
-        return;
-      }
-      dispatch(logoutUserSuccess());
-      navigate("/login");
-    } catch (err) {
-      dispatch(logoutUserFailure(err));
-    }
-  };
-
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
         <h1 className="py-8 text-3xl font-semibold text-center">Account</h1>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-          <input
-            type="file"
-            ref={uploadfileRef}
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileChange}
-          />
-          <img
-            src={formData.avatar || currentUser?.avatar}
-            className="self-center object-cover w-24 h-24 rounded-full cursor-pointer"
-            onClick={() =>
-              uploadfileRef.current && uploadfileRef.current.click()
-            }
+        <form
+          onSubmit={handleSubmit(handleUserUpdate)}
+          className="flex flex-col gap-3"
+        >
+          <ProfileAvatar
+            register={register}
+            setValue={setValue}
+            setFilePercentage={setFilePercentage}
+            setFileUploadError={setFileUploadError}
+            currentUser={currentUser}
           />
           <p className="self-center text-sm">
             {fileUploadError ? (
@@ -167,8 +118,7 @@ const Account = () => {
               className="grow"
               placeholder="Username"
               id="username"
-              defaultValue={currentUser?.username}
-              onChange={handleInputChange}
+              {...register("username")}
             />
           </label>
           <label className="flex items-center gap-2 input input-bordered">
@@ -186,8 +136,7 @@ const Account = () => {
               className="grow"
               placeholder="Email"
               id="email"
-              defaultValue={currentUser?.email}
-              onChange={handleInputChange}
+              {...register("email")}
             />
           </label>
 
@@ -209,19 +158,15 @@ const Account = () => {
               className="grow"
               placeholder="Password"
               id="password"
-              onChange={handleInputChange}
+              {...register("password")}
             />
           </label>
           <button className="btn btn-primary">Update account</button>
         </form>
         {/* account actions buttons */}
         <div className="flex justify-between mt-4">
-          <button className="btn btn-error" onClick={handleDeleteUser}>
-            Delete Account
-          </button>
-          <button className="btn btn-warning" onClick={handleLogout}>
-            Logout
-          </button>
+          <button className="btn btn-error">Delete Account</button>
+          <button className="btn btn-warning">Logout</button>
         </div>
       </div>
     </div>
