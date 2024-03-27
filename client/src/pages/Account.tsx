@@ -16,6 +16,7 @@ const Account = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
+  const [serverErrorMessage, setServerErrorMessage] = useState("");
   const dispatch = useDispatch();
 
   const {
@@ -72,14 +73,38 @@ const Account = () => {
       }
 
       dispatch(updateUserSuccess(data));
-    } catch (err) {
-      console.log(err);
+    } catch (err: any) {
+      if (err.response && err.response.data.message) {
+        setServerErrorMessage(err.response.data.message);
+      } else {
+        setServerErrorMessage(
+          "Something went wrong, couldn't update your account!"
+        );
+      }
     }
   };
 
   return (
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="w-full max-w-xl px-4">
+        {serverErrorMessage && (
+          <div role="alert" className="my-4 alert alert-error">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-6 h-6 stroke-current shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{serverErrorMessage}</span>
+          </div>
+        )}
         <h1 className="py-8 text-3xl font-semibold text-center">Account</h1>
         <form
           onSubmit={handleSubmit(handleUserUpdate)}

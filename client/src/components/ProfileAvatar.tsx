@@ -83,7 +83,6 @@ const ProfileAvatar = ({
         onClick={() => hiddenInputRef.current && hiddenInputRef.current.click()}
         src={preview || currentUser?.avatar}
       />
-      ;
     </>
   );
 };
