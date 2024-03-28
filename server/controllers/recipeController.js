@@ -1,13 +1,29 @@
 const asyncHandler = require("express-async-handler");
 const Recipe = require("../models/recipeModel");
 
-//private access
+//private access - get users recipes
 const getRecipes = asyncHandler(async (req, res) => {
-  const recipes = await Recipe.find({ user_id: req.user.id }); // get contacts related to the logged in user
-  res.status(200).json(recipes);
+  try {
+    const recipes = await Recipe.find({ user_id: req.user.id }); // get recipes related to the logged in user
+    res.status(200).json(recipes);
+  } catch (err) {
+    res.status(500);
+    throw new Error("Error, couldn't fetch user's recipes!");
+  }
 });
 
-//private access
+//get public recipes
+const getPublicRecipes = asyncHandler(async (req, res) => {
+  try {
+    const publicRecipes = await Recipe.find({ isPublic: true });
+    res.status(200).json(publicRecipes);
+  } catch (err) {
+    res.status(500);
+    throw new Error("Error, couldn't fetch public recipes!");
+  }
+});
+
+//private access - get single recipe by its id
 const getRecipe = asyncHandler(async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
@@ -19,7 +35,8 @@ const getRecipe = asyncHandler(async (req, res) => {
 
 //private access
 const createRecipe = asyncHandler(async (req, res) => {
-  const { name, ingredients, instructions, imageUrl, cookingTime } = req.body;
+  const { name, ingredients, instructions, imageUrl, cookingTime, isPublic } =
+    req.body;
   if (!name || !ingredients || !instructions || !imageUrl || !cookingTime) {
     res.status(400);
     throw new Error("All fields are required!");
@@ -30,6 +47,7 @@ const createRecipe = asyncHandler(async (req, res) => {
     instructions,
     imageUrl,
     cookingTime,
+    isPublic,
     user_id: req.user.id,
   });
   res.status(201).json(recipe);
@@ -79,6 +97,7 @@ const deleteRecipe = asyncHandler(async (req, res) => {
 
 module.exports = {
   getRecipes,
+  getPublicRecipes,
   getRecipe,
   createRecipe,
   updateRecipe,

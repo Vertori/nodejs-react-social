@@ -29,6 +29,10 @@ const recipeSchema = new mongoose.Schema(
       type: Number,
       required: [true, "Cooking time is required"],
     },
+    isPublic: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

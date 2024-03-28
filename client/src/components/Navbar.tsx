@@ -33,11 +33,7 @@ const Navbar = () => {
   return (
     <div className="fixed top-0 z-50 px-8 py-4 shadow-md navbar bg-base-100">
       <div className="flex-1">
-        <Link
-          to="/"
-          className="text-xl btn btn-ghost"
-          onClick={() => console.log()}
-        >
+        <Link to="/" className="text-xl btn btn-ghost">
           Logo
         </Link>
       </div>
@@ -52,10 +48,7 @@ const Navbar = () => {
                 className="btn btn-ghost btn-circle avatar"
               >
                 <div className="w-10 rounded-full">
-                  <img
-                    alt="User avatar"
-                    src={currentUser.avatar}
-                  />
+                  <img alt="User avatar" src={currentUser.avatar} />
                 </div>
               </div>
               <ul
