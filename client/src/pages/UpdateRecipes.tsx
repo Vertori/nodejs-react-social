@@ -53,6 +53,7 @@ const UpdateRecipes = () => {
       instructions: data?.instructions,
       imageUrl: data?.imageUrl,
       cookingTime: data?.cookingTime,
+      isPublic: data?.isPublic,
     },
   });
 
@@ -203,6 +204,19 @@ const UpdateRecipes = () => {
           {errors.cookingTime && (
             <p className="text-red-500">{`${errors.cookingTime.message}`}</p>
           )}
+          <div className="flex justify-end">
+            <label className="cursor-pointer label">
+              <span className="mr-2 label-text">
+                Do you want to make your recipe public?
+              </span>
+              <input
+                type="checkbox"
+                id="isPublic"
+                className="checkbox checkbox-primary"
+                {...register("isPublic")}
+              />
+            </label>
+          </div>
           <button
             disabled={isSubmitting}
             className="btn btn-primary"

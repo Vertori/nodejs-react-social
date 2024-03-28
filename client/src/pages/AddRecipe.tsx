@@ -8,13 +8,11 @@ import {
   UserRecipe,
   addRecipeFormSchema,
 } from "../types";
-import { useCookies } from "react-cookie";
 import { FieldValues, useFieldArray, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const AddRecipe = () => {
   const [serverErrorMessage, setServerErrorMessage] = useState("");
-  const [cookies, setCookies] = useCookies(["access_token"]);
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -171,6 +169,19 @@ const AddRecipe = () => {
           {errors.cookingTime && (
             <p className="text-red-500">{`${errors.cookingTime.message}`}</p>
           )}
+          <div className="flex justify-end">
+            <label className="cursor-pointer label">
+              <span className="mr-2 label-text">
+                Do you want to make your recipe public?
+              </span>
+              <input
+                type="checkbox"
+                id="isPublic"
+                className="checkbox checkbox-primary"
+                {...register("isPublic")}
+              />
+            </label>
+          </div>
           <button
             disabled={isSubmitting}
             className="btn btn-primary"

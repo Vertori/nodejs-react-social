@@ -73,6 +73,7 @@ export const addRecipeFormSchema = z.object({
     .min(1, { message: "Instructions can't be empty" }),
   imageUrl: z.string().url(),
   cookingTime: z.coerce.number().positive(),
+  isPublic: z.boolean(),
 });
 
 export type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;
