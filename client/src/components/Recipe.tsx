@@ -127,8 +127,8 @@ const Recipe = ({ recipe, deleteUsersRecipe }: RecipeProps) => {
               <div>
                 <h3 className="text-lg text-blue-700">Ingredients</h3>
                 <ul className="list-disc">
-                  {recipe.ingredients.map((ingredient) => (
-                    <li>{ingredient}</li>
+                  {recipe.ingredients.map((ingredient, index) => (
+                    <li key={index}>{ingredient}</li>
                   ))}
                 </ul>
               </div>

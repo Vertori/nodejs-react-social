@@ -56,6 +56,20 @@ export const loginSchema = z.object({
 
 export type TLoginSchema = z.infer<typeof loginSchema>;
 
+const categoriesOptions = [
+  "breakfast",
+  "lunch",
+  "dinner",
+  "soup",
+  "salad",
+  "dessert",
+  "snack",
+  "bakery",
+  "appetizer",
+  "cocktail",
+  "smoothie",
+];
+
 // recipe form
 export const addRecipeFormSchema = z.object({
   name: z.string().trim().min(1, { message: "Recipe name is required" }),
@@ -74,6 +88,24 @@ export const addRecipeFormSchema = z.object({
   imageUrl: z.string().url(),
   cookingTime: z.coerce.number().positive(),
   isPublic: z.boolean(),
+  category: z.enum(
+    [
+      "breakfast",
+      "lunch",
+      "dinner",
+      "soup",
+      "salad",
+      "dessert",
+      "snack",
+      "bakery",
+      "appetizer",
+      "cocktail",
+      "smoothie",
+    ],
+    {
+      errorMap: (issue, ctx) => ({ message: "Category is required" }),
+    }
+  ),
 });
 
 export type TAddRecipeFormSchema = z.infer<typeof addRecipeFormSchema>;

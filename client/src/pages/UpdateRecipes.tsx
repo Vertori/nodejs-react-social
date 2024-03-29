@@ -49,6 +49,7 @@ const UpdateRecipes = () => {
     resolver: zodResolver(addRecipeFormSchema),
     values: {
       name: data?.name,
+      category: data?.category,
       ingredients: transformedIngredients,
       instructions: data?.instructions,
       imageUrl: data?.imageUrl,
@@ -127,6 +128,29 @@ const UpdateRecipes = () => {
           />
           {errors.name && (
             <p className="text-red-500">{`${errors.name.message}`}</p>
+          )}
+          <select
+            className="w-full select select-bordered"
+            {...register("category")}
+            defaultValue={"Category"}
+          >
+            <option disabled value="Category">
+              Category
+            </option>
+            <option value="breakfast">Breakfast</option>
+            <option value="lunch">Lunch</option>
+            <option value="dinner">Dinner</option>
+            <option value="soup">Soup</option>
+            <option value="salad">Salad</option>
+            <option value="dessert">Dessert</option>
+            <option value="snack">Snack</option>
+            <option value="bakery">Bakery</option>
+            <option value="appetizer">Appetizer</option>
+            <option value="cocktail">Cocktail</option>
+            <option value="smoothie">Smoothie</option>
+          </select>
+          {errors.category && (
+            <p className="text-red-500">{`${errors.category.message}`}</p>
           )}
           {fields.map((field, index) => {
             const errorForField = errors?.ingredients?.[index]?.ingredient;

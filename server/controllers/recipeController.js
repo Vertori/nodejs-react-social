@@ -35,14 +35,29 @@ const getRecipe = asyncHandler(async (req, res) => {
 
 //private access
 const createRecipe = asyncHandler(async (req, res) => {
-  const { name, ingredients, instructions, imageUrl, cookingTime, isPublic } =
-    req.body;
-  if (!name || !ingredients || !instructions || !imageUrl || !cookingTime) {
+  const {
+    name,
+    category,
+    ingredients,
+    instructions,
+    imageUrl,
+    cookingTime,
+    isPublic,
+  } = req.body;
+  if (
+    !name ||
+    !category ||
+    !ingredients ||
+    !instructions ||
+    !imageUrl ||
+    !cookingTime
+  ) {
     res.status(400);
     throw new Error("All fields are required!");
   }
   const recipe = await Recipe.create({
     name,
+    category,
     ingredients,
     instructions,
     imageUrl,
