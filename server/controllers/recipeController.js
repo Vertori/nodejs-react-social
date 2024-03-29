@@ -23,6 +23,25 @@ const getPublicRecipes = asyncHandler(async (req, res) => {
   }
 });
 
+const getRecipesByCategory = asyncHandler(async (req, res) => {
+  try {
+    const categoryName = req.params.category;
+    const recipes = await Recipe.find({ category: categoryName });
+
+    if (recipes.length > 0) {
+      res.status(200).json(recipes);
+    } else {
+      res.status(404);
+      throw new Error(`Error, no recipes found for category: ${categoryName}`);
+    }
+  } catch (err) {
+    res.status(500);
+    throw new Error(
+      `Error, couldn't fetch recipes for category: ${categoryName}`
+    );
+  }
+});
+
 //private access - get single recipe by its id
 const getRecipe = asyncHandler(async (req, res) => {
   const recipe = await Recipe.findById(req.params.id);
@@ -113,6 +132,7 @@ const deleteRecipe = asyncHandler(async (req, res) => {
 module.exports = {
   getRecipes,
   getPublicRecipes,
+  getRecipesByCategory,
   getRecipe,
   createRecipe,
   updateRecipe,
