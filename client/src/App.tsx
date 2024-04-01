@@ -1,6 +1,5 @@
 import "./App.css";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "./components/Navbar";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
@@ -13,6 +12,7 @@ import UpdateRecipes from "./pages/UpdateRecipes";
 import AddRecipe from "./pages/AddRecipe";
 import axios from "axios";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Navbar from "./components/Navbar";
 
 axios.defaults.withCredentials = true;
 

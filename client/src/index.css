@@ -1,3 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: white !important;
+  background-color: rgb(239 68 68 / 1) !important;
+  border-radius: 50% !important;
+  height: 2.5rem !important;
+  width: 2.5rem !important;
+  z-index: 10;
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
