@@ -3,16 +3,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
-const registerUser = asyncHandler(async (req, res) => {
+const registerUser = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
     res.status(400);
-    throw new Error("All fields are required!");
+    next(new Error("All fields are required!"));
   }
   const userAvailable = await User.findOne({ email });
   if (userAvailable) {
     res.status(400);
-    throw new Error("User already registered!");
+    next(new Error("User already registered!"));
   }
   //hash password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,16 +26,16 @@ const registerUser = asyncHandler(async (req, res) => {
     res.status(201).json({ _id: user.id, email: user.email });
   } else {
     res.status(400);
-    throw new Error("User data is not valid");
+    next(new Error("User data is not valid"));
   }
-  res.json({ message: "User registered" });
+  res.status(200).json({ message: "User registered" });
 });
 
-const loginUser = asyncHandler(async (req, res) => {
+const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
     res.status(400);
-    throw new Error("All fields are required!");
+    next(new Error("All fields are required!"));
   }
   const user = await User.findOne({ email });
   // compare password with hashed password
@@ -58,25 +58,25 @@ const loginUser = asyncHandler(async (req, res) => {
       .json(responseUser);
   } else {
     res.status(401);
-    throw new Error("Email or password is not valid");
+    next(new Error("Email or password is not valid"));
   }
 });
 
-const currentUser = asyncHandler(async (req, res) => {
+const currentUser = asyncHandler(async (req, res, next) => {
   res.json(req.user);
 });
 
-const logoutUser = asyncHandler(async (req, res) => {
+const logoutUser = asyncHandler(async (req, res, next) => {
   try {
     res.clearCookie("access_token");
     res.status(200).json("User has been logged out!");
   } catch (err) {
     res.status(500);
-    throw new Error(`Couldn't logout user, error: ${err}`);
+    next(new Error(`Couldn't logout user, error: ${err}`));
   }
 });
 
-const loginWithGoogle = asyncHandler(async (req, res) => {
+const loginWithGoogle = asyncHandler(async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
     if (user) {
@@ -122,7 +122,7 @@ const loginWithGoogle = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     res.status(401);
-    throw new Error("You can only update your own account!");
+    next(new Error("You can only update your own account!"));
   }
 
   try {
@@ -145,23 +145,23 @@ const updateUser = asyncHandler(async (req, res, next) => {
     res.status(200).json(rest);
   } catch (err) {
     res.status(500);
-    throw new Error(`Error happened while trying to update your account!`);
+    next(new Error(`Error happened while trying to update your account!`));
   }
 });
 
-const deleteUser = asyncHandler(async (req, res) => {
+const deleteUser = asyncHandler(async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     res.status(401);
-    throw new Error("You can only delete your own account!");
+    next(new Error("You can only delete your own account!"));
   }
 
   try {
     await User.findByIdAndDelete(req.params.id);
-    res.clearCookie("access_token")
+    res.clearCookie("access_token");
     res.status(200).json({ message: "User has been deleted!" });
   } catch (err) {
     res.status(500);
-    throw new Error(`Error happened while trying to delete your account!`);
+    next(new Error(`Error happened while trying to delete your account!`));
   }
 });
 

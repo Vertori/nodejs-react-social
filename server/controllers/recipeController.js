@@ -2,24 +2,24 @@ const asyncHandler = require("express-async-handler");
 const Recipe = require("../models/recipeModel");
 
 //private access - get users recipes
-const getRecipes = asyncHandler(async (req, res) => {
+const getRecipes = asyncHandler(async (req, res, next) => {
   try {
     const recipes = await Recipe.find({ user_id: req.user.id }); // get recipes related to the logged in user
     res.status(200).json(recipes);
   } catch (err) {
     res.status(500);
-    throw new Error("Error, couldn't fetch user's recipes!");
+    next(new Error("Error, couldn't fetch user's recipes!"));
   }
 });
 
 //get public recipes
-const getPublicRecipes = asyncHandler(async (req, res) => {
+const getPublicRecipes = asyncHandler(async (req, res, next) => {
   try {
     const publicRecipes = await Recipe.find({ isPublic: true });
     res.status(200).json(publicRecipes);
   } catch (err) {
     res.status(500);
-    throw new Error("Error, couldn't fetch public recipes!");
+    next(new Error("Error, couldn't fetch public recipes!"));
   }
 });
 
@@ -48,17 +48,17 @@ const getRecipesByCategory = asyncHandler(async (req, res, next) => {
 });
 
 //private access - get single recipe by its id
-const getRecipe = asyncHandler(async (req, res) => {
+const getRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
     res.status(404);
-    throw new Error("Recipe not found!");
+    next(new Error("Recipe not found!"));
   }
   res.status(200).json(recipe);
 });
 
 //private access
-const createRecipe = asyncHandler(async (req, res) => {
+const createRecipe = asyncHandler(async (req, res, next) => {
   const {
     name,
     category,
@@ -77,7 +77,7 @@ const createRecipe = asyncHandler(async (req, res) => {
     !cookingTime
   ) {
     res.status(400);
-    throw new Error("All fields are required!");
+    next(new Error("All fields are required!"));
   }
   const recipe = await Recipe.create({
     name,
@@ -93,17 +93,17 @@ const createRecipe = asyncHandler(async (req, res) => {
 });
 
 //private access
-const updateRecipe = asyncHandler(async (req, res) => {
+const updateRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
     res.status(404);
-    throw new Error("Recipe not found!");
+    next(new Error("Recipe not found!"));
   }
 
   // don't allow to update recipe of another user
   if (recipe.user_id.toString() !== req.user.id) {
     res.status(403);
-    throw new Error("No permission for updating other users recipes!");
+    next(new Error("No permission for updating other users recipes!"));
   }
 
   const updatedRecipe = await Recipe.findByIdAndUpdate(
@@ -116,17 +116,17 @@ const updateRecipe = asyncHandler(async (req, res) => {
 });
 
 //private access
-const deleteRecipe = asyncHandler(async (req, res) => {
+const deleteRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
     res.status(404);
-    throw new Error("Recipe not found!");
+    next(new Error("Recipe not found!"));
   }
 
   // don't allow to delete recipe of another user
   if (recipe.user_id.toString() !== req.user.id) {
     res.status(403);
-    throw new Error("No permission for deleting other users recipes!");
+    next(new Error("No permission for deleting other users recipes!"));
   }
 
   await Recipe.deleteOne({ _id: req.params.id });
