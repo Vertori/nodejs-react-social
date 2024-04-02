@@ -1,12 +1,58 @@
+import breakfastImg from "../assets/recipeCategoriesImages/breakfastImg.avif";
+import lunchImg from "../assets/recipeCategoriesImages/lunchImg.jpeg";
+import dinnerImg from "../assets/recipeCategoriesImages/dinnerImg.jpeg";
+import soupImg from "../assets/recipeCategoriesImages/soupImg.jpeg";
+import saladImg from "../assets/recipeCategoriesImages/saladImg.jpeg";
+import dessertImg from "../assets/recipeCategoriesImages/dessertImg.webp";
+import snackImg from "../assets/recipeCategoriesImages/snackImg.jpeg";
+import bakeryImg from "../assets/recipeCategoriesImages/bakeryImg.jpeg";
+import cocktailImg from "../assets/recipeCategoriesImages/cocktailImg.webp";
+import appetizerImg from "../assets/recipeCategoriesImages/appetizerImg.jpeg";
+import smoothieImg from "../assets/recipeCategoriesImages/smoothieImg.jpeg";
+
 export const recipesCategories = [
   {
-    name: "Breakfast",
-    image:
-      "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1547&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "breakfast",
+    image: breakfastImg,
   },
   {
-    name: "Lunch",
-    image:
-      "https://images.unsplash.com/photo-1484723091739-30a097e8f929?q=80&w=1547&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    name: "lunch",
+    image: lunchImg,
+  },
+  {
+    name: "dinner",
+    image: dinnerImg,
+  },
+  {
+    name: "soup",
+    image: soupImg,
+  },
+  {
+    name: "salad",
+    image: saladImg,
+  },
+  {
+    name: "dessert",
+    image: dessertImg,
+  },
+  {
+    name: "snack",
+    image: snackImg,
+  },
+  {
+    name: "bakery",
+    image: bakeryImg,
+  },
+  {
+    name: "appetizer",
+    image: appetizerImg,
+  },
+  {
+    name: "cocktail",
+    image: cocktailImg,
+  },
+  {
+    name: "smoothie",
+    image: smoothieImg,
   },
 ];

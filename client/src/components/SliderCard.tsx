@@ -8,7 +8,7 @@ type SliderProps = {
 const SliderCard = ({ category }: SliderProps) => {
   const { name, image } = category;
   return (
-    <div className="flex flex-col items-center justify-center h-full transition border border-gray-100 rounded-md shadow-md cursor-pointer hover:border-gray-400 group">
+    <div className="flex flex-col items-center justify-center h-full pt-2 transition border border-gray-100 rounded-md shadow-md cursor-pointer hover:border-gray-400 group">
       <div>
         <img
           src={image}
