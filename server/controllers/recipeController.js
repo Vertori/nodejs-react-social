@@ -23,21 +23,26 @@ const getPublicRecipes = asyncHandler(async (req, res) => {
   }
 });
 
-const getRecipesByCategory = asyncHandler(async (req, res) => {
+const getRecipesByCategory = asyncHandler(async (req, res, next) => {
+  let categoryName;
+
   try {
-    const categoryName = req.params.category;
-    const recipes = await Recipe.find({ category: categoryName });
+    categoryName = req.params.category;
+    const recipes = await Recipe.find({
+      category: categoryName,
+      isPublic: true,
+    });
 
     if (recipes.length > 0) {
       res.status(200).json(recipes);
     } else {
       res.status(404);
-      throw new Error(`Error, no recipes found for category: ${categoryName}`);
+      next(new Error(`Error, no recipes found for category: ${categoryName}`));
     }
   } catch (err) {
     res.status(500);
-    throw new Error(
-      `Error, couldn't fetch recipes for category: ${categoryName}`
+    next(
+      new Error(`Error, couldn't fetch recipes for category: ${categoryName}`)
     );
   }
 });

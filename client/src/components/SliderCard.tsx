@@ -1,14 +1,23 @@
-type SliderProps = {
+interface SliderProps {
   category: {
     name: string;
     image: string;
   };
-};
+  fetchRecipesByCategory: (categoryName: string) => void;
+}
 
-const SliderCard = ({ category }: SliderProps) => {
+const SliderCard = ({ category, fetchRecipesByCategory }: SliderProps) => {
   const { name, image } = category;
+
+  const handleClick = () => {
+    fetchRecipesByCategory(name);
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-full pt-2 transition border border-gray-100 rounded-md shadow-md cursor-pointer hover:border-gray-400 group">
+    <div
+      className="flex flex-col items-center justify-center h-full pt-2 transition border border-gray-100 rounded-md shadow-md cursor-pointer hover:border-gray-400 group"
+      onClick={handleClick}
+    >
       <div>
         <img
           src={image}
