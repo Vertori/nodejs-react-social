@@ -20,11 +20,15 @@ const Register = () => {
     try {
       await axios.post("http://localhost:5000/api/users/register", data);
       navigate("/login");
-    } catch (err: any) {
-      if (err.response && err.response.data.message) {
-        setServerErrorMessage(err.response.data.message);
+    } catch (err) {
+      if (err instanceof axios.AxiosError) {
+        if (err.response && err.response.data.message) {
+          setServerErrorMessage(err.response.data.message);
+        } else {
+          setServerErrorMessage("Something went wrong!");
+        }
       } else {
-        setServerErrorMessage("Something went wrong!");
+        console.error("Unexpected error:", err);
       }
     }
   };
