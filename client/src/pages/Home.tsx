@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import CategoriesSlider from "../components/CategoriesSlider";
 import axios from "axios";
 import { UserRecipe } from "../types";
+import PublicRecipe from "../components/PublicRecipe";
 
 const Home = () => {
   const [category, setCategory] = useState("all");
@@ -45,8 +46,9 @@ const Home = () => {
   }, []);
 
   return (
-    <section className="mt-[82px] container mx-auto">
+    <section className="mt-[82px] container mx-auto px-2">
       <CategoriesSlider fetchRecipesByCategory={fetchRecipesByCategory} />
+      {/* no recipes found error */}
       {fetchByCatErr && (
         <div role="alert" className="alert alert-error">
           <svg
@@ -66,9 +68,12 @@ const Home = () => {
         </div>
       )}
       <p className="text-2xl text-red-500">{category} recipes</p>
-      {recipes.map((recipe) => (
-        <p key={recipe._id}>{recipe.name}</p>
-      ))}
+      {/* recipes container  */}
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+        {recipes.map((recipe) => (
+          <PublicRecipe recipe={recipe} key={recipe._id} />
+        ))}
+      </div>
     </section>
   );
 };

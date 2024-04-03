@@ -15,7 +15,6 @@ const CategoriesSlider = ({
   return (
     <div className="py-8">
       <Swiper
-        className="px-2 mx-2"
         modules={[Navigation]}
         loop={true}
         spaceBetween={10}
