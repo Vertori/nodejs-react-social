@@ -13,6 +13,7 @@ import AddRecipe from "./pages/AddRecipe";
 import axios from "axios";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
+import RecipeDetails from "./pages/RecipeDetails";
 
 axios.defaults.withCredentials = true;
 
@@ -32,6 +33,9 @@ function App() {
           <Route path="/recipes" element={<Recipes />} />
           <Route path="/recipes/add" element={<AddRecipe />} />
           <Route path="/recipes/update/:id" element={<UpdateRecipes />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/recipe/:id" element={<RecipeDetails />} />
+          </Route>
           <Route path="/contacts/add" element={<AddContact />} />
           <Route path="/contacts/update/:id" element={<UpdateContact />} />
         </Routes>

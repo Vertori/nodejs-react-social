@@ -67,7 +67,7 @@ const Home = () => {
           <span>{fetchByCatErr}</span>
         </div>
       )}
-      <p className="text-2xl text-red-500">{category} recipes</p>
+      <p className="mb-4 text-2xl text-red-500">{category} recipes</p>
       {/* recipes container  */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {recipes.map((recipe) => (
