@@ -6,12 +6,10 @@ import SliderCard from "../components/SliderCard";
 import { recipesCategories } from "../lib/constants";
 
 interface CategoriesSliderProps {
-  fetchRecipesByCategory: (categoryName: string) => void;
+  handleCategoryChange: (categoryName: string) => void;
 }
 
-const CategoriesSlider = ({
-  fetchRecipesByCategory,
-}: CategoriesSliderProps) => {
+const CategoriesSlider = ({ handleCategoryChange }: CategoriesSliderProps) => {
   return (
     <div className="py-8">
       <Swiper
@@ -44,7 +42,7 @@ const CategoriesSlider = ({
                 <SliderCard
                   category={category}
                   key={index}
-                  fetchRecipesByCategory={fetchRecipesByCategory}
+                  handleCategoryChange={handleCategoryChange}
                 />
               </SwiperSlide>
             );

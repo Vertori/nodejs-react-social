@@ -3,14 +3,14 @@ interface SliderProps {
     name: string;
     image: string;
   };
-  fetchRecipesByCategory: (categoryName: string) => void;
+  handleCategoryChange: (categoryName: string) => void;
 }
 
-const SliderCard = ({ category, fetchRecipesByCategory }: SliderProps) => {
+const SliderCard = ({ category, handleCategoryChange }: SliderProps) => {
   const { name, image } = category;
 
   const handleClick = () => {
-    fetchRecipesByCategory(name);
+    handleCategoryChange(name);
   };
 
   return (
