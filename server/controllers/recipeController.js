@@ -36,6 +36,7 @@ const getPublicRecipes = asyncHandler(async (req, res, next) => {
 
 const getRecipesByCategory = asyncHandler(async (req, res, next) => {
   let categoryName;
+  const { page = 0 } = req.query;
 
   try {
     categoryName = req.params.category;
