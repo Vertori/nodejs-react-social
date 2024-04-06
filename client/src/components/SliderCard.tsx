@@ -1,22 +1,21 @@
+import { useDispatch } from "react-redux";
+import { setCategory } from "../features/category/categorySlice";
+
 interface SliderProps {
   category: {
     name: string;
     image: string;
   };
-  handleCategoryChange: (categoryName: string) => void;
 }
 
-const SliderCard = ({ category, handleCategoryChange }: SliderProps) => {
+const SliderCard = ({ category }: SliderProps) => {
   const { name, image } = category;
-
-  const handleClick = () => {
-    handleCategoryChange(name);
-  };
+  const dispatch = useDispatch();
 
   return (
     <div
       className="flex flex-col items-center justify-center h-full pt-2 transition border border-gray-100 rounded-md shadow-md cursor-pointer hover:border-gray-400 group"
-      onClick={handleClick}
+      onClick={() => dispatch(setCategory(name))}
     >
       <div>
         <img

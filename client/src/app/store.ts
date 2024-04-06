@@ -1,11 +1,20 @@
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import userReducer from "../features/user/userSlice";
+import categoryReducer from "../features/category/categorySlice";
 import { persistReducer, persistStore } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 
-const rootReducer = combineReducers({ user: userReducer });
+const rootReducer = combineReducers({
+  user: userReducer,
+  category: categoryReducer,
+});
 
-const persistConfig = { key: "root", storage, version: 1 };
+const persistConfig = {
+  key: "root",
+  storage,
+  version: 1,
+  blacklist: ["category"],
+};
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

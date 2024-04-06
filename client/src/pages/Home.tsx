@@ -4,9 +4,11 @@ import axios from "axios";
 import { UserRecipe } from "../types";
 import PublicRecipe from "../components/PublicRecipe";
 import { useQuery } from "@tanstack/react-query";
+import { useSelector } from "react-redux";
+import { RootState } from "../app/store";
 
 const Home = () => {
-  const [category, setCategory] = useState("");
+  const category = useSelector((state: RootState) => state.category.category);
 
   const {
     data: categoryRecipes,
@@ -37,16 +39,12 @@ const Home = () => {
     },
   });
 
-  const handleCategoryChange = (categoryName: string) => {
-    setCategory(categoryName);
-  };
-
   const recipesToDisplay = category === "" ? allRecipes : categoryRecipes;
   const areRecipesLoading = allRecipesLoading || categoryRecipesLoading;
 
   return (
     <section className="mt-[82px] container mx-auto px-2">
-      <CategoriesSlider handleCategoryChange={handleCategoryChange} />
+      <CategoriesSlider />
       <p className="mb-4 text-2xl text-red-500">{category} recipes</p>
       {/* recipes container  */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">

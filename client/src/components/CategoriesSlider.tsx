@@ -5,11 +5,7 @@ import "swiper/css/navigation";
 import SliderCard from "../components/SliderCard";
 import { recipesCategories } from "../lib/constants";
 
-interface CategoriesSliderProps {
-  handleCategoryChange: (categoryName: string) => void;
-}
-
-const CategoriesSlider = ({ handleCategoryChange }: CategoriesSliderProps) => {
+const CategoriesSlider = () => {
   return (
     <div className="py-8">
       <Swiper
@@ -39,11 +35,7 @@ const CategoriesSlider = ({ handleCategoryChange }: CategoriesSliderProps) => {
           {recipesCategories.map((category, index) => {
             return (
               <SwiperSlide key={index}>
-                <SliderCard
-                  category={category}
-                  key={index}
-                  handleCategoryChange={handleCategoryChange}
-                />
+                <SliderCard category={category} key={index} />
               </SwiperSlide>
             );
           })}
