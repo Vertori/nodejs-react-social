@@ -1,10 +1,17 @@
 const asyncHandler = require("express-async-handler");
 const Recipe = require("../models/recipeModel");
 
+const HOME_PAGE_SIZE = 10;
+const USER_RECIPES_PAGE_SIZE = 8;
+
 //private access - get users recipes
 const getRecipes = asyncHandler(async (req, res, next) => {
+  const { page = 0 } = req.query;
   try {
-    const recipes = await Recipe.find({ user_id: req.user.id }); // get recipes related to the logged in user
+    const recipes = await Recipe.find({ user_id: req.user.id }, null, {
+      skip: parseInt(page) * USER_RECIPES_PAGE_SIZE,
+      limit: USER_RECIPES_PAGE_SIZE,
+    }); // get recipes related to the logged in user
     res.status(200).json(recipes);
   } catch (err) {
     res.status(500);
@@ -14,8 +21,12 @@ const getRecipes = asyncHandler(async (req, res, next) => {
 
 //get public recipes
 const getPublicRecipes = asyncHandler(async (req, res, next) => {
+  const { page = 0 } = req.query;
   try {
-    const publicRecipes = await Recipe.find({ isPublic: true });
+    const publicRecipes = await Recipe.find({ isPublic: true }, null, {
+      skip: parseInt(page) * HOME_PAGE_SIZE,
+      limit: HOME_PAGE_SIZE,
+    });
     res.status(200).json(publicRecipes);
   } catch (err) {
     res.status(500);
@@ -28,10 +39,14 @@ const getRecipesByCategory = asyncHandler(async (req, res, next) => {
 
   try {
     categoryName = req.params.category;
-    const recipes = await Recipe.find({
-      category: categoryName,
-      isPublic: true,
-    });
+    const recipes = await Recipe.find(
+      {
+        category: categoryName,
+        isPublic: true,
+      },
+      null,
+      { skip: parseInt(page) * HOME_PAGE_SIZE, limit: HOME_PAGE_SIZE }
+    );
 
     if (recipes.length > 0) {
       res.status(200).json(recipes);
