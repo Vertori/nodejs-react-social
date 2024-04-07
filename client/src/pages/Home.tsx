@@ -4,12 +4,14 @@ import axios from "axios";
 import { UserRecipe } from "../types";
 import PublicRecipe from "../components/PublicRecipe";
 import { useQuery } from "@tanstack/react-query";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
+import { setPage } from "../features/category/categorySlice";
 
 const Home = () => {
+  const dispatch = useDispatch();
   const category = useSelector((state: RootState) => state.category.category);
-  const [page, setPage] = useState(0);
+  const page = useSelector((state: RootState) => state.category.page);
 
   const {
     data: categoryRecipes,
@@ -59,12 +61,15 @@ const Home = () => {
           <button
             className="join-item btn"
             disabled={page === 0}
-            onClick={() => setPage(page - 1)}
+            onClick={() => dispatch(setPage(page - 1))}
           >
             «
           </button>
           <button className="join-item btn">Page {page + 1}</button>
-          <button className="join-item btn" onClick={() => setPage(page + 1)}>
+          <button
+            className="join-item btn"
+            onClick={() => dispatch(setPage(page + 1))}
+          >
             »
           </button>
         </div>
