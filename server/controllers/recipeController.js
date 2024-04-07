@@ -27,7 +27,9 @@ const getPublicRecipes = asyncHandler(async (req, res, next) => {
       skip: parseInt(page) * HOME_PAGE_SIZE,
       limit: HOME_PAGE_SIZE,
     });
-    res.status(200).json(publicRecipes);
+    const totalRecipes = await Recipe.countDocuments({ isPublic: true });
+    const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE)
+    res.status(200).json({recipes: publicRecipes, pages});
   } catch (err) {
     res.status(500);
     next(new Error("Error, couldn't fetch public recipes!"));
@@ -50,7 +52,9 @@ const getRecipesByCategory = asyncHandler(async (req, res, next) => {
     );
 
     if (recipes.length > 0) {
-      res.status(200).json(recipes);
+      const totalRecipes = await Recipe.countDocuments({ category: categoryName, isPublic: true, });
+      const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE)
+      res.status(200).json({recipes, pages});
     } else {
       res.status(404);
       next(new Error(`Error, no recipes found for category: ${categoryName}`));

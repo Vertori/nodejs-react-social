@@ -12,6 +12,7 @@ const Home = () => {
   const dispatch = useDispatch();
   const category = useSelector((state: RootState) => state.category.category);
   const page = useSelector((state: RootState) => state.category.page);
+  const [totalPages, setTotalPages] = useState(0);
 
   const {
     data: categoryRecipes,
@@ -23,7 +24,8 @@ const Home = () => {
       const { data } = await axios.get(
         `http://localhost:5000/api/recipes/category/${category}`
       );
-      return data as UserRecipe[];
+      setTotalPages(data.pages);
+      return data as { recipes: UserRecipe[]; pages: number };
     },
     enabled: Boolean(category),
   });
@@ -38,11 +40,13 @@ const Home = () => {
       const { data } = await axios.get(
         `http://localhost:5000/api/recipes/public?page=${page}`
       );
-      return data as UserRecipe[];
+      setTotalPages(data.pages);
+      return data as { recipes: UserRecipe[]; pages: number };
     },
   });
 
-  const recipesToDisplay = category === "" ? allRecipes : categoryRecipes;
+  const recipesToDisplay =
+    category === "" ? allRecipes?.recipes : categoryRecipes?.recipes;
   const areRecipesLoading = allRecipesLoading || categoryRecipesLoading;
 
   return (
@@ -68,6 +72,7 @@ const Home = () => {
           <button className="join-item btn">Page {page + 1}</button>
           <button
             className="join-item btn"
+            disabled={page === totalPages - 1}
             onClick={() => dispatch(setPage(page + 1))}
           >
             »
