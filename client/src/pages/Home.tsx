@@ -1,4 +1,3 @@
-import { useState } from "react";
 import CategoriesSlider from "../components/CategoriesSlider";
 import axios from "axios";
 import { UserRecipe } from "../types";
@@ -6,13 +5,16 @@ import PublicRecipe from "../components/PublicRecipe";
 import { useQuery } from "@tanstack/react-query";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import { setPage } from "../features/category/categorySlice";
+import PaginationHome from "../components/PaginationHome";
+import { setTotalPages } from "../features/category/categorySlice";
 
 const Home = () => {
   const dispatch = useDispatch();
   const category = useSelector((state: RootState) => state.category.category);
   const page = useSelector((state: RootState) => state.category.page);
-  const [totalPages, setTotalPages] = useState(0);
+  const totalPages = useSelector(
+    (state: RootState) => state.category.totalPages
+  );
 
   const {
     data: categoryRecipes,
@@ -22,9 +24,9 @@ const Home = () => {
     queryKey: ["categoryRecipes", category, page],
     queryFn: async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/api/recipes/category/${category}`
+        `http://localhost:5000/api/recipes/category/${category}?page=${page}`
       );
-      setTotalPages(data.pages);
+      dispatch(setTotalPages(data.pages));
       return data as { recipes: UserRecipe[]; pages: number };
     },
     enabled: Boolean(category),
@@ -40,7 +42,7 @@ const Home = () => {
       const { data } = await axios.get(
         `http://localhost:5000/api/recipes/public?page=${page}`
       );
-      setTotalPages(data.pages);
+      dispatch(setTotalPages(data.pages));
       return data as { recipes: UserRecipe[]; pages: number };
     },
   });
@@ -60,25 +62,7 @@ const Home = () => {
         ))}
       </div>
       {/* pagination  */}
-      <div className="flex justify-center w-full py-10">
-        <div className="mx-auto join">
-          <button
-            className="join-item btn"
-            disabled={page === 0}
-            onClick={() => dispatch(setPage(page - 1))}
-          >
-            «
-          </button>
-          <button className="join-item btn">Page {page + 1}</button>
-          <button
-            className="join-item btn"
-            disabled={page === totalPages - 1}
-            onClick={() => dispatch(setPage(page + 1))}
-          >
-            »
-          </button>
-        </div>
-      </div>
+      <PaginationHome />
     </section>
   );
 };
