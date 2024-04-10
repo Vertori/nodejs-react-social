@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../app/store";
 import PaginationHome from "../components/PaginationHome";
 import { setTotalPages } from "../features/category/categorySlice";
+import SearchRecipes from "../components/SearchRecipes";
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -52,7 +53,12 @@ const Home = () => {
   const areRecipesLoading = allRecipesLoading || categoryRecipesLoading;
 
   return (
-    <section className="mt-[82px] container mx-auto px-2">
+    <section className="container px-2 mx-auto mt-36">
+      <SearchRecipes />
+      <div className="my-10 font-medium divider font-primary">OR</div>
+      <h2 className="text-2xl font-medium text-center font-primary">
+        Discover by Categories
+      </h2>
       <CategoriesSlider />
       <p className="mb-4 text-2xl text-red-500">{category} recipes</p>
       {/* recipes container  */}
