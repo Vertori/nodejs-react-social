@@ -22,14 +22,28 @@ const getRecipes = asyncHandler(async (req, res, next) => {
 //get public recipes
 const getPublicRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
+  const sortDirection = req.query.order === "asc" ? 1 : -1;
   try {
-    const publicRecipes = await Recipe.find({ isPublic: true }, null, {
-      skip: parseInt(page) * HOME_PAGE_SIZE,
-      limit: HOME_PAGE_SIZE,
-    });
+    const publicRecipes = await Recipe.find(
+      {
+        isPublic: true,
+        ...(req.query.category && { category: req.query.category }),
+        ...(req.query.searchTerm && {
+          $or: [
+            { name: { $regex: req.query.searchTerm, $options: "i" } },
+            { instructions: { $regex: req.query.searchTerm, $options: "i" } },
+          ],
+        }),
+      },
+      null,
+      {
+        skip: parseInt(page) * HOME_PAGE_SIZE,
+        limit: HOME_PAGE_SIZE,
+      }
+    ).sort({ updatedAt: sortDirection });
     const totalRecipes = await Recipe.countDocuments({ isPublic: true });
-    const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE)
-    res.status(200).json({recipes: publicRecipes, pages});
+    const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE);
+    res.status(200).json({ recipes: publicRecipes, pages });
   } catch (err) {
     res.status(500);
     next(new Error("Error, couldn't fetch public recipes!"));
@@ -52,9 +66,12 @@ const getRecipesByCategory = asyncHandler(async (req, res, next) => {
     );
 
     if (recipes.length > 0) {
-      const totalRecipes = await Recipe.countDocuments({ category: categoryName, isPublic: true, });
-      const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE)
-      res.status(200).json({recipes, pages});
+      const totalRecipes = await Recipe.countDocuments({
+        category: categoryName,
+        isPublic: true,
+      });
+      const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE);
+      res.status(200).json({ recipes, pages });
     } else {
       res.status(404);
       next(new Error(`Error, no recipes found for category: ${categoryName}`));
