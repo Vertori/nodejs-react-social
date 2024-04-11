@@ -14,6 +14,7 @@ import axios from "axios";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import RecipeDetails from "./pages/RecipeDetails";
+import SearchPage from "./pages/SearchPage";
 
 axios.defaults.withCredentials = true;
 
@@ -38,6 +39,7 @@ function App() {
           </Route>
           <Route path="/contacts/add" element={<AddContact />} />
           <Route path="/contacts/update/:id" element={<UpdateContact />} />
+          <Route path="/search" element={<SearchPage />} />
         </Routes>
       </Router>
     </>
