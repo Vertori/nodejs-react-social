@@ -23,25 +23,25 @@ const getRecipes = asyncHandler(async (req, res, next) => {
 const getPublicRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
   const sortDirection = req.query.order === "asc" ? 1 : -1;
+  const filterCriteria = {
+    isPublic: true,
+    ...(req.query.category && { category: req.query.category }),
+    ...(req.query.searchTerm && {
+      $or: [
+        { name: { $regex: req.query.searchTerm, $options: "i" } },
+        { instructions: { $regex: req.query.searchTerm, $options: "i" } },
+      ],
+    }),
+  };
   try {
-    const publicRecipes = await Recipe.find(
-      {
-        isPublic: true,
-        ...(req.query.category && { category: req.query.category }),
-        ...(req.query.searchTerm && {
-          $or: [
-            { name: { $regex: req.query.searchTerm, $options: "i" } },
-            { instructions: { $regex: req.query.searchTerm, $options: "i" } },
-          ],
-        }),
-      },
-      null,
-      {
-        skip: parseInt(page) * HOME_PAGE_SIZE,
-        limit: HOME_PAGE_SIZE,
-      }
-    ).sort({ updatedAt: sortDirection });
-    const totalRecipes = await Recipe.countDocuments({ isPublic: true });
+    const publicRecipes = await Recipe.find(filterCriteria, null, {
+      skip: parseInt(page) * HOME_PAGE_SIZE,
+      limit: HOME_PAGE_SIZE,
+    }).sort({ updatedAt: sortDirection });
+    
+
+    const totalRecipes = await Recipe.countDocuments(filterCriteria);
+    
     const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE);
     res.status(200).json({ recipes: publicRecipes, pages });
   } catch (err) {
