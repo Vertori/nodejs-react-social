@@ -13,6 +13,8 @@ const SearchPage = () => {
   });
   const [recipes, setRecipes] = useState<UserRecipe[]>([]);
   const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -35,9 +37,10 @@ const SearchPage = () => {
         setLoading(true);
         const searchQuery = urlParams.toString();
         const { data } = await axios.get(
-          `http://localhost:5000/api/recipes/public?${searchQuery}`
+          `http://localhost:5000/api/recipes/public?${searchQuery}&page=${currentPage}`
         );
         setRecipes(data.recipes);
+        setTotalPages(data.pages);
         setLoading(false);
       } catch (err) {
         setLoading(false);
@@ -45,7 +48,7 @@ const SearchPage = () => {
       }
     };
     fetchResults();
-  }, [location.search]);
+  }, [location.search, currentPage]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -169,6 +172,26 @@ const SearchPage = () => {
             recipes.map((recipe) => (
               <PublicRecipe recipe={recipe} key={recipe._id} />
             ))}
+        </div>
+      </div>
+      {/* pagination  */}
+      <div className="flex justify-center w-full py-10">
+        <div className="mx-auto join">
+          <button
+            className="join-item btn"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 0}
+          >
+            «
+          </button>
+          <button className="join-item btn">Page {currentPage + 1}</button>
+          <button
+            className="join-item btn"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === totalPages - 1}
+          >
+            »
+          </button>
         </div>
       </div>
     </section>
