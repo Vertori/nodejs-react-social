@@ -4,11 +4,6 @@ import { useForm } from "react-hook-form";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { useState } from "react";
 import {
-  deleteUserStart,
-  deleteUserSuccess,
-  logoutUserFailure,
-  logoutUserStart,
-  logoutUserSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -16,15 +11,15 @@ import {
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { TUpdateAccountSchema, updateAccountSchema } from "../types";
-import { useNavigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 const Account = () => {
+  const { handleLogout, handleDeleteUser } = useAuth();
   const { currentUser } = useSelector((state: RootState) => state.user);
   const [filePercentage, setFilePercentage] = useState(0);
   const [fileUploadError, setFileUploadError] = useState(false);
   const [serverErrorMessage, setServerErrorMessage] = useState("");
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const {
     register,
@@ -88,35 +83,6 @@ const Account = () => {
           "Something went wrong, couldn't update your account!"
         );
       }
-    }
-  };
-
-  const handleDeleteUser = async () => {
-    try {
-      dispatch(deleteUserStart());
-      await axios.delete(
-        `http://localhost:5000/api/users/delete/${currentUser?._id}`
-      );
-      dispatch(deleteUserSuccess());
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      dispatch(logoutUserStart());
-      const { data } = await axios.post(
-        "http://localhost:5000/api/users/logout"
-      );
-      if (data.success === false) {
-        dispatch(logoutUserFailure(data.message));
-        return;
-      }
-      dispatch(logoutUserSuccess());
-      navigate("/login");
-    } catch (err) {
-      dispatch(logoutUserFailure(err));
     }
   };
 

@@ -1,34 +1,11 @@
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
-import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { RootState } from "../app/store";
-import {
-  logoutUserStart,
-  logoutUserSuccess,
-  logoutUserFailure,
-} from "../features/user/userSlice";
+import useAuth from "../hooks/useAuth";
 
 const Navbar = () => {
   const { currentUser } = useSelector((state: RootState) => state.user);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogout = async () => {
-    try {
-      dispatch(logoutUserStart());
-      const { data } = await axios.post(
-        "http://localhost:5000/api/users/logout"
-      );
-      if (data.success === false) {
-        dispatch(logoutUserFailure(data.message));
-        return;
-      }
-      dispatch(logoutUserSuccess());
-      navigate("/login");
-    } catch (err) {
-      dispatch(logoutUserFailure(err));
-    }
-  };
+  const { handleLogout } = useAuth();
 
   return (
     <header className="fixed top-0 z-50 px-8 py-4 bg-base-100 navbar">
