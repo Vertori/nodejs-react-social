@@ -4,7 +4,9 @@ const Recipe = require("../models/recipeModel");
 const HOME_PAGE_SIZE = 10;
 const USER_RECIPES_PAGE_SIZE = 8;
 
-//private access - get users recipes
+// private access - get users recipes
+// GET
+// /api/recipes
 const getRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
   try {
@@ -19,7 +21,9 @@ const getRecipes = asyncHandler(async (req, res, next) => {
   }
 });
 
-//get public recipes
+// public access - get public recipes
+// GET
+// /api/recipes/public
 const getPublicRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
   const sortDirection = req.query.order === "asc" ? 1 : -1;
@@ -50,6 +54,9 @@ const getPublicRecipes = asyncHandler(async (req, res, next) => {
   }
 });
 
+// public access - get recipes by category
+// GET
+// /api/recipes/category/:category
 const getRecipesByCategory = asyncHandler(async (req, res, next) => {
   let categoryName;
   const { page = 0 } = req.query;
@@ -84,7 +91,9 @@ const getRecipesByCategory = asyncHandler(async (req, res, next) => {
   }
 });
 
-//private access - get single recipe by its id
+// private access - get single recipe by its id
+// GET
+// /api/recipes/:id
 const getRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
@@ -94,7 +103,9 @@ const getRecipe = asyncHandler(async (req, res, next) => {
   res.status(200).json(recipe);
 });
 
-//private access
+// private access - create recipe
+// POST
+// /api/recipes
 const createRecipe = asyncHandler(async (req, res, next) => {
   const {
     name,
@@ -129,7 +140,9 @@ const createRecipe = asyncHandler(async (req, res, next) => {
   res.status(201).json(recipe);
 });
 
-//private access
+// private access - update recipe
+// PUT
+// /api/recipes/:id
 const updateRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {
@@ -152,7 +165,9 @@ const updateRecipe = asyncHandler(async (req, res, next) => {
   res.status(201).json(updatedRecipe);
 });
 
-//private access
+// private access - delete recipe
+// DELETE
+// /api/recipes/:id
 const deleteRecipe = asyncHandler(async (req, res, next) => {
   const recipe = await Recipe.findById(req.params.id);
   if (!recipe) {

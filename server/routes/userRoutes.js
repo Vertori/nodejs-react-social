@@ -16,7 +16,7 @@ router.post("/register", registerUser);
 
 router.post("/login", loginUser);
 
-router.get("/logout", logoutUser);
+router.post("/logout", logoutUser);
 
 router.post("/google", loginWithGoogle);
 

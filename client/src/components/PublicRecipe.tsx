@@ -8,12 +8,21 @@ interface PublicRecipeProps {
 }
 
 const PublicRecipe = ({ recipe }: PublicRecipeProps) => {
+  
+  const handleHeartClick = (e: React.MouseEvent<HTMLSpanElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <Link to={`/recipe/${recipe._id}`}>
       <div key={recipe._id} className="shadow-lg cursor-pointer group">
         <div className="relative overflow-hidden transition duration-500 ease-in-out">
-          <span className="absolute z-10 flex items-center justify-center p-2 bg-white rounded-full right-2 top-2 hover:text-red-500">
-            <FaHeart className="text-xl transition " />
+          <span 
+            className="absolute z-10 flex items-center justify-center p-2 bg-white rounded-full right-2 top-2 hover:text-red-500"
+            onClick={handleHeartClick}
+          >
+            <FaHeart className="text-xl transition" />
           </span>
           <img
             src={recipe.imageUrl}

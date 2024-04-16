@@ -16,7 +16,7 @@ const Navbar = () => {
   const handleLogout = async () => {
     try {
       dispatch(logoutUserStart());
-      const { data } = await axios.get(
+      const { data } = await axios.post(
         "http://localhost:5000/api/users/logout"
       );
       if (data.success === false) {

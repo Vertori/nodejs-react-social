@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
+// Register user
+// POST
+// /api/users/register
 const registerUser = asyncHandler(async (req, res, next) => {
   const { username, email, password } = req.body;
   if (!username || !email || !password) {
@@ -31,6 +34,9 @@ const registerUser = asyncHandler(async (req, res, next) => {
   res.status(200).json({ message: "User registered" });
 });
 
+// Login user
+// POST
+// /api/users/login
 const loginUser = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -62,10 +68,16 @@ const loginUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Get current user - private access
+// GET
+// /api/users/current
 const currentUser = asyncHandler(async (req, res, next) => {
   res.json(req.user);
 });
 
+// Logout user
+// POST
+// /api/users/logout
 const logoutUser = asyncHandler(async (req, res, next) => {
   try {
     res.clearCookie("access_token");
@@ -76,6 +88,9 @@ const logoutUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Login with google
+// POST
+// /api/users/google
 const loginWithGoogle = asyncHandler(async (req, res, next) => {
   try {
     let user = await User.findOne({ email: req.body.email });
@@ -119,6 +134,9 @@ const loginWithGoogle = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Update user - private access
+// PUT
+// /api/users/update/id
 const updateUser = asyncHandler(async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     res.status(401);
@@ -149,6 +167,9 @@ const updateUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Delete user - private access
+// DELETE
+// /api/users/delete/:id
 const deleteUser = asyncHandler(async (req, res, next) => {
   if (req.user.id !== req.params.id) {
     res.status(401);
