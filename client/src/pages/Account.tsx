@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import ProfileAvatar from "../components/ProfileAvatar";
 import { useState } from "react";
 import {
+  deleteUserStart,
+  deleteUserSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -81,6 +83,18 @@ const Account = () => {
           "Something went wrong, couldn't update your account!"
         );
       }
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    try {
+      dispatch(deleteUserStart());
+      await axios.delete(
+        `http://localhost:5000/api/users/delete/${currentUser?._id}`
+      );
+      dispatch(deleteUserSuccess());
+    } catch (err) {
+      console.log(err);
     }
   };
 
@@ -208,7 +222,9 @@ const Account = () => {
         </form>
         {/* account actions buttons */}
         <div className="flex justify-between mt-4">
-          <button className="btn btn-error">Delete Account</button>
+          <button className="btn btn-error" onClick={handleDeleteUser}>
+            Delete Account
+          </button>
           <button className="btn btn-warning">Logout</button>
         </div>
       </div>
