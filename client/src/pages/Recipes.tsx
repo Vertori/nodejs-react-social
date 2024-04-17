@@ -4,20 +4,23 @@ import { UserRecipe } from "../types";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Recipe from "../components/Recipe";
+import { useState } from "react";
 
 const Recipes = () => {
   const queryClient = useQueryClient();
+  const [currentPage, setCurrentPage] = useState(0);
 
   const {
     data: userRecipesData,
     isLoading: UserRecipesLoading,
     isError: UserRecipesError,
   } = useQuery({
-    queryKey: ["userRecipes"],
+    queryKey: ["userRecipes", currentPage],
     queryFn: async () => {
-      const { data } = await axios.get("http://localhost:5000/api/recipes");
-      console.log(data);
-      return data as UserRecipe[];
+      const { data } = await axios.get(
+        `http://localhost:5000/api/recipes?page=${currentPage}`
+      );
+      return data as { recipes: UserRecipe[]; pages: number };
     },
   });
 
@@ -70,13 +73,33 @@ const Recipes = () => {
         Add new recipe
       </Link>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {userRecipesData?.map((recipe) => (
+        {userRecipesData?.recipes.map((recipe) => (
           <Recipe
             recipe={recipe}
             deleteUsersRecipe={deleteUsersRecipe}
             key={recipe._id}
           />
         ))}
+      </div>
+      {/* pagination  */}
+      <div className="flex justify-center w-full py-10">
+        <div className="mx-auto join">
+          <button
+            className="join-item btn"
+            onClick={() => setCurrentPage(currentPage - 1)}
+            disabled={currentPage === 0}
+          >
+            «
+          </button>
+          <button className="join-item btn">Page {currentPage + 1}</button>
+          <button
+            className="join-item btn"
+            onClick={() => setCurrentPage(currentPage + 1)}
+            disabled={currentPage === (userRecipesData?.pages ?? 0) - 1}
+          >
+            »
+          </button>
+        </div>
       </div>
     </div>
   );

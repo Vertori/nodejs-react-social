@@ -14,7 +14,10 @@ const getRecipes = asyncHandler(async (req, res, next) => {
       skip: parseInt(page) * USER_RECIPES_PAGE_SIZE,
       limit: USER_RECIPES_PAGE_SIZE,
     }); // get recipes related to the logged in user
-    res.status(200).json(recipes);
+
+    const totalRecipes = await Recipe.countDocuments({user_id: req.user.id})
+    const pages = Math.ceil(totalRecipes / USER_RECIPES_PAGE_SIZE)
+    res.status(200).json({recipes, pages});
   } catch (err) {
     res.status(500);
     next(new Error("Error, couldn't fetch user's recipes!"));
