@@ -15,9 +15,9 @@ const getRecipes = asyncHandler(async (req, res, next) => {
       limit: USER_RECIPES_PAGE_SIZE,
     }); // get recipes related to the logged in user
 
-    const totalRecipes = await Recipe.countDocuments({user_id: req.user.id})
-    const pages = Math.ceil(totalRecipes / USER_RECIPES_PAGE_SIZE)
-    res.status(200).json({recipes, pages});
+    const totalRecipes = await Recipe.countDocuments({ user_id: req.user.id });
+    const pages = Math.ceil(totalRecipes / USER_RECIPES_PAGE_SIZE);
+    res.status(200).json({ recipes, pages });
   } catch (err) {
     res.status(500);
     next(new Error("Error, couldn't fetch user's recipes!"));
@@ -45,10 +45,9 @@ const getPublicRecipes = asyncHandler(async (req, res, next) => {
       skip: parseInt(page) * HOME_PAGE_SIZE,
       limit: HOME_PAGE_SIZE,
     }).sort({ updatedAt: sortDirection });
-    
 
     const totalRecipes = await Recipe.countDocuments(filterCriteria);
-    
+
     const pages = Math.ceil(totalRecipes / HOME_PAGE_SIZE);
     res.status(200).json({ recipes: publicRecipes, pages });
   } catch (err) {

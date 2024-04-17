@@ -1,10 +1,10 @@
 import axios from "axios";
-import { useCookies } from "react-cookie";
 import { UserRecipe } from "../types";
 import { Link } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Recipe from "../components/Recipe";
 import { useState } from "react";
+import PaginationClassic from "../components/PaginationClassic";
 
 const Recipes = () => {
   const queryClient = useQueryClient();
@@ -82,25 +82,11 @@ const Recipes = () => {
         ))}
       </div>
       {/* pagination  */}
-      <div className="flex justify-center w-full py-10">
-        <div className="mx-auto join">
-          <button
-            className="join-item btn"
-            onClick={() => setCurrentPage(currentPage - 1)}
-            disabled={currentPage === 0}
-          >
-            «
-          </button>
-          <button className="join-item btn">Page {currentPage + 1}</button>
-          <button
-            className="join-item btn"
-            onClick={() => setCurrentPage(currentPage + 1)}
-            disabled={currentPage === (userRecipesData?.pages ?? 0) - 1}
-          >
-            »
-          </button>
-        </div>
-      </div>
+      <PaginationClassic
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={userRecipesData?.pages ?? 0}
+      />
     </div>
   );
 };
