@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
+const Recipe = require("../models/recipeModel");
 
 // Register user
 // POST
@@ -186,6 +187,44 @@ const deleteUser = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Save recipe to user
+// POST
+// /api/users/saveRecipe/:recipeId
+const saveRecipe = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      res.status(404);
+      next(new Error("User not found!"));
+    }
+
+    const recipeId = req.params.recipeId;
+    const recipe = await Recipe.findById(recipeId);
+    if (!recipe) {
+      res.status(404);
+      next(new Error("Recipe not found!"));
+    }
+
+    if (user.savedRecipes.includes(recipeId)) {
+      res.status(400);
+      next(new Error("Recipe already saved!"));
+    }
+
+    user.savedRecipes.push(recipeId);
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: `Recipe with id ${recipeId} saved successfully!` });
+  } catch (err) {
+    res.status(500);
+    next(
+      new Error(`Error happened while saving user's recipe: ${err.message}`)
+    );
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -194,4 +233,5 @@ module.exports = {
   currentUser,
   updateUser,
   deleteUser,
+  saveRecipe,
 };
