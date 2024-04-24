@@ -5,6 +5,7 @@ export interface LoggedUser {
   username: string;
   email: string;
   avatar: string;
+  savedRecipes: string[];
 }
 
 export interface UserContact {
