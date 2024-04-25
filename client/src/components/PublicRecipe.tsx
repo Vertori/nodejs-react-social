@@ -21,6 +21,7 @@ const PublicRecipe = ({ recipe }: PublicRecipeProps) => {
     e.stopPropagation();
 
     if (!isRecipeSaved) {
+      // if recipe is not saved, try to save it
       try {
         await axios.post(
           `http://localhost:5000/api/users/saveRecipe/${recipe._id}`
@@ -29,6 +30,24 @@ const PublicRecipe = ({ recipe }: PublicRecipeProps) => {
         const updatedUser = {
           ...currentUser,
           savedRecipes: [...(currentUser?.savedRecipes || []), recipe._id],
+        };
+
+        dispatch(updateUserSuccess(updatedUser));
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      // if recipe is saved, try to delete it from saved recipes
+      try {
+        await axios.delete(
+          `http://localhost:5000/api/users/deleteSavedRecipe/${recipe._id}`
+        );
+
+        const updatedUser = {
+          ...currentUser,
+          savedRecipes: currentUser?.savedRecipes.filter(
+            (id) => id !== recipe._id
+          ),
         };
 
         dispatch(updateUserSuccess(updatedUser));

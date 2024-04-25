@@ -8,6 +8,7 @@ const {
   updateUser,
   deleteUser,
   saveRecipe,
+  deleteSavedRecipe,
 } = require("../controllers/userController");
 const validateToken = require("../middleware/validateTokenHandler");
 
@@ -22,6 +23,8 @@ router.post("/logout", logoutUser);
 router.post("/google", loginWithGoogle);
 
 router.post("/saveRecipe/:recipeId", validateToken, saveRecipe);
+
+router.delete("/deleteSavedRecipe/:recipeId", validateToken, deleteSavedRecipe);
 
 router.post("/update/:id", validateToken, updateUser);
 

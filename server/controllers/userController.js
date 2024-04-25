@@ -225,6 +225,45 @@ const saveRecipe = asyncHandler(async (req, res, next) => {
   }
 });
 
+// Delete recipe from saved by user
+// DELETE
+// /api/users/deleteSavedRecipe/:recipeId
+const deleteSavedRecipe = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      res.status(404);
+      next(new Error("User not found!"));
+    }
+
+    const recipeId = req.params.recipeId;
+
+    // if recipe is not in saved recipes array
+    if (!user.savedRecipes.includes(recipeId)) {
+      res.status(400);
+      next(new Error("Recipe is not saved by the user!"));
+    }
+
+    // if recipe is in saved recipes array, remove it
+    user.savedRecipes = user.savedRecipes.filter(
+      (id) => id.toString() !== recipeId
+    );
+    await user.save();
+
+    res
+      .status(200)
+      .json({ message: `Recipe with id ${recipeId} removed successfully!` });
+  } catch (err) {
+    res.status(500);
+    next(
+      new Error(
+        `Error happened while trying to remove recipe with id ${recipeId} from recipes saved by user!`
+      )
+    );
+  }
+});
+
 module.exports = {
   registerUser,
   loginUser,
@@ -234,4 +273,5 @@ module.exports = {
   updateUser,
   deleteUser,
   saveRecipe,
+  deleteSavedRecipe,
 };
