@@ -15,6 +15,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import RecipeDetails from "./pages/RecipeDetails";
 import SearchPage from "./pages/SearchPage";
+import ScrollToTop from "./components/ScrollToTop";
 
 axios.defaults.withCredentials = true;
 
@@ -22,6 +23,7 @@ function App() {
   return (
     <>
       <Router>
+        <ScrollToTop />
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />

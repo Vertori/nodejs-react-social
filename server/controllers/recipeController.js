@@ -29,7 +29,7 @@ const getRecipes = asyncHandler(async (req, res, next) => {
 // /api/recipes/public
 const getPublicRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
-  const sortDirection = req.query.order === "asc" ? 1 : -1;
+  const sortDirection = req.query.sort === "asc" ? 1 : -1;
   const filterCriteria = {
     isPublic: true,
     ...(req.query.category && { category: req.query.category }),
