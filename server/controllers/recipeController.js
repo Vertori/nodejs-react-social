@@ -193,8 +193,15 @@ const deleteRecipe = asyncHandler(async (req, res, next) => {
 // GET
 // /api/recipes/favourite
 const getFavouriteRecipes = asyncHandler(async (req, res, next) => {
+  const { page = 0 } = req.query;
   try {
-    const user = await User.findById(req.user.id).populate("savedRecipes");
+    const user = await User.findById(req.user.id).populate({
+      path: "savedRecipes",
+      options: {
+        skip: parseInt(page) * USER_RECIPES_PAGE_SIZE,
+        limit: USER_RECIPES_PAGE_SIZE,
+      },
+    });
 
     if (!user) {
       next(new Error("User not found!"));
