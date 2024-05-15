@@ -39,7 +39,7 @@ const Navbar = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link to="/recipes" className="justify-between">
+                    <Link to="/recipes/favourite" className="justify-between">
                       Favourite Recipes
                     </Link>
                   </li>

@@ -16,6 +16,7 @@ import Navbar from "./components/Navbar";
 import RecipeDetails from "./pages/RecipeDetails";
 import SearchPage from "./pages/SearchPage";
 import ScrollToTop from "./components/ScrollToTop";
+import FavouriteRecipes from "./pages/FavouriteRecipes";
 
 axios.defaults.withCredentials = true;
 
@@ -33,7 +34,12 @@ function App() {
             <Route path="/account" element={<Account />} />
           </Route>
           <Route path="/contacts" element={<Contacts />} />
-          <Route path="/recipes" element={<Recipes />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/recipes" element={<Recipes />} />
+          </Route>
+          <Route element={<ProtectedRoute />}>
+            <Route path="/recipes/favourite" element={<FavouriteRecipes />} />
+          </Route>
           <Route path="/recipes/add" element={<AddRecipe />} />
           <Route path="/recipes/update/:id" element={<UpdateRecipes />} />
           <Route element={<ProtectedRoute />}>
