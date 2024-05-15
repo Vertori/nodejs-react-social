@@ -194,8 +194,18 @@ const deleteRecipe = asyncHandler(async (req, res, next) => {
 // /api/recipes/favourite
 const getFavouriteRecipes = asyncHandler(async (req, res, next) => {
   const { page = 0 } = req.query;
+
   try {
-    const user = await User.findById(req.user.id).populate({
+    const user = await User.findById(req.user.id);
+
+    if (!user) {
+      return next(new Error("User not found!"));
+    }
+
+    const totalRecipes = user.savedRecipes.length;
+    const pages = Math.ceil(totalRecipes / USER_RECIPES_PAGE_SIZE);
+
+    const recipes = await User.findById(req.user.id).populate({
       path: "savedRecipes",
       options: {
         skip: parseInt(page) * USER_RECIPES_PAGE_SIZE,
@@ -203,12 +213,9 @@ const getFavouriteRecipes = asyncHandler(async (req, res, next) => {
       },
     });
 
-    if (!user) {
-      next(new Error("User not found!"));
-    }
+    const favouriteRecipes = recipes.savedRecipes;
 
-    const favouriteRecipes = user.savedRecipes;
-    res.status(200).json(favouriteRecipes);
+    res.status(200).json({ favouriteRecipes, pages });
   } catch (err) {
     res.status(500);
     next(new Error("Error, couldn't fetch user's favourite recipes!"));

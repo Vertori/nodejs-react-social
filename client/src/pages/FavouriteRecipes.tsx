@@ -2,19 +2,24 @@ import { UserRecipe } from "../types";
 import axios from "axios";
 import PublicRecipe from "../components/PublicRecipe";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import PaginationClassic from "../components/PaginationClassic";
 
 const FavouriteRecipes = () => {
+  const [currentPage, setCurrentPage] = useState(0);
+
   const {
     data: favouriteRecipesData,
     isLoading: isFavouriteRecipesLoading,
     isError: isFavouriteRecipesError,
   } = useQuery({
-    queryKey: ["favouriteRecipes"],
+    queryKey: ["favouriteRecipes", currentPage],
     queryFn: async () => {
       const { data } = await axios.get(
-        "http://localhost:5000/api/recipes/favourite"
+        `http://localhost:5000/api/recipes/favourite?page=${currentPage}`
       );
-      return data as UserRecipe[];
+      console.log(data);
+      return data as { favouriteRecipes: UserRecipe[]; pages: number };
     },
   });
 
@@ -52,10 +57,16 @@ const FavouriteRecipes = () => {
   return (
     <div className="flex flex-col items-center justify-center gap-8 px-12 py-4 mt-32">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {favouriteRecipesData?.map((recipe) => (
+        {favouriteRecipesData?.favouriteRecipes.map((recipe) => (
           <PublicRecipe recipe={recipe} key={recipe._id} />
         ))}
       </div>
+      {/* pagination  */}
+      <PaginationClassic
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPages={favouriteRecipesData?.pages ?? 0}
+      />
     </div>
   );
 };
