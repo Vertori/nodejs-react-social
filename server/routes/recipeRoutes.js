@@ -8,12 +8,14 @@ const {
   deleteRecipe,
   getPublicRecipes,
   getRecipesByCategory,
+  getFavouriteRecipes,
 } = require("../controllers/recipeController");
 const validateToken = require("../middleware/validateTokenHandler");
 
 router.route("/public").get(getPublicRecipes);
 router.route("/category/:category").get(getRecipesByCategory);
 router.use(validateToken); // validating middleware (checking token) for all of the recipe routes
+router.route("/favourite").get(getFavouriteRecipes);
 router.route("/").get(getRecipes).post(createRecipe);
 router.route("/:id").get(getRecipe).put(updateRecipe).delete(deleteRecipe);
 

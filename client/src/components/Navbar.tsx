@@ -35,7 +35,12 @@ const Navbar = () => {
                 >
                   <li>
                     <Link to="/recipes" className="justify-between">
-                      Recipes
+                      My Recipes
+                    </Link>
+                  </li>
+                  <li>
+                    <Link to="/recipes" className="justify-between">
+                      Favourite Recipes
                     </Link>
                   </li>
                   <li>

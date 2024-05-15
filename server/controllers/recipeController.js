@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Recipe = require("../models/recipeModel");
+const User = require("../models/userModel");
 
 const HOME_PAGE_SIZE = 10;
 const USER_RECIPES_PAGE_SIZE = 8;
@@ -188,6 +189,25 @@ const deleteRecipe = asyncHandler(async (req, res, next) => {
   res.status(201).json(recipe);
 });
 
+// private access - get user's favorite recipes
+// GET
+// /api/recipes/favourite
+const getFavouriteRecipes = asyncHandler(async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id).populate("savedRecipes");
+
+    if (!user) {
+      next(new Error("User not found!"));
+    }
+
+    const favouriteRecipes = user.savedRecipes;
+    res.status(200).json(favouriteRecipes);
+  } catch (err) {
+    res.status(500);
+    next(new Error("Error, couldn't fetch user's favourite recipes!"));
+  }
+});
+
 module.exports = {
   getRecipes,
   getPublicRecipes,
@@ -196,4 +216,5 @@ module.exports = {
   createRecipe,
   updateRecipe,
   deleteRecipe,
+  getFavouriteRecipes,
 };
